@@ -144,6 +144,8 @@ const BIN_ID  = '6a043752250b1311c342d00e';
 const BASE    = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
 
 const PRODUCT_TYPES = ['1인 종일권','1인 반일권','2인 종일권','2인 반일권','3인 종일권','4인 종일권'];
+const SEASON_TYPES  = ['로우시즌','하이시즌','골드시즌'];
+const SEASON_COLORS = { '로우시즌': '#34C759', '하이시즌': '#FF9500', '골드시즌': '#FF2D55' };
 const COLORS = ['#007AFF','#34C759','#FF9500','#FF2D55','#AF52DE','#00C7BE','#5AC8FA','#FF6B35'];
 
 let promos = [];
@@ -279,7 +281,8 @@ function openDayModal(ds, d, m, y) {
       html += `<div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;
       if (p.products && p.products.length > 0) {
         p.products.forEach(pr => {
-          html += `<div class="product-row"><span class="ptype">${pr.name}</span><span style="font-weight:700;">${Number(pr.price).toLocaleString()}원</span></div>`;
+          const seasonLabel = pr.season ? pr.season.replace('시즌','') + '   ' : '';
+          html += `<div class="product-row"><span class="ptype">${seasonLabel}${pr.name}</span><span style="font-weight:700;">${Number(pr.price).toLocaleString()}원</span></div>`;
         });
       } else {
         html += `<div style="font-size:12px;color:#aaa;">판매 상품 없음</div>`;
@@ -303,12 +306,17 @@ function addProduct() {
   div.className = 'product-entry'; div.id = 'pe_'+id;
   div.innerHTML = `
     <button class="del-btn" onclick="removeProduct(${id})">×</button>
-    <div class="form-group" style="margin-bottom:0;padding-right:28px;">
+    <div class="form-group" style="margin-bottom:8px;padding-right:28px;">
       <label>상품명</label>
       <select id="pname_${id}">${PRODUCT_TYPES.map(t=>`<option>${t}</option>`).join('')}</select>
     </div>
-    <div class="row2">
-      <div class="form-group" style="margin-bottom:0;"><label>가격 (원)</label><input type="number" id="pprice_${id}" placeholder="0" inputmode="numeric"></div>
+    <div class="form-group" style="margin-bottom:8px;">
+      <label>시즌</label>
+      <select id="pseason_${id}">${SEASON_TYPES.map(t=>`<option>${t}</option>`).join('')}</select>
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <label>가격 (원)</label>
+      <input type="number" id="pprice_${id}" placeholder="0" inputmode="numeric">
     </div>`;
   document.getElementById('productList').appendChild(div);
 }
@@ -325,9 +333,10 @@ async function submitPromo() {
   if (!start || !end || !type) { showToast('시작일, 종료일, 프로모션 구분을 입력해 주세요.'); return; }
   if (start > end) { showToast('종료일이 시작일보다 빠릅니다.'); return; }
   const products = productEntries.map(id => {
-    const name  = document.getElementById('pname_'+id)?.value;
-    const price = document.getElementById('pprice_'+id)?.value;
-    return name && price ? { name, price } : null;
+    const name   = document.getElementById('pname_'+id)?.value;
+    const season = document.getElementById('pseason_'+id)?.value;
+    const price  = document.getElementById('pprice_'+id)?.value;
+    return name && price ? { name, season, price } : null;
   }).filter(Boolean);
 
   const btn = document.getElementById('submitBtn');
@@ -356,7 +365,10 @@ function renderList() {
   container.innerHTML = sorted.map(p => {
     const c = getColor(p.idx);
     const prodHtml = p.products?.length
-      ? p.products.map(pr=>`<span class="badge" style="background:${hexToRgba(c,0.12)};color:${c};">${pr.name} ${Number(pr.price).toLocaleString()}원</span>`).join('')
+      ? p.products.map(pr => {
+          const seasonLabel = pr.season ? pr.season.replace('시즌','') + '   ' : '';
+          return `<span class="badge" style="background:${hexToRgba(c,0.12)};color:${c};">${seasonLabel}${pr.name} ${Number(pr.price).toLocaleString()}원</span>`;
+        }).join('')
       : `<span style="font-size:12px;color:#aaa;">상품 없음</span>`;
     return `<div class="list-item">
       <div class="color-bar" style="background:${c};"></div>
