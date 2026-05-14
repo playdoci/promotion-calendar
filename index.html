@@ -368,7 +368,9 @@ function renderSeasonDisplay(){
     rows.push(`<div class="season-display-row"><span class="season-badge high">하이시즌</span><span class="season-display-text">${fmtDate(seasons.highStart)} ~ ${fmtDate(seasons.highEnd)}</span></div>`);
   if(seasons.goldStart&&seasons.goldEnd)
     rows.push(`<div class="season-display-row"><span class="season-badge gold">골드시즌</span><span class="season-display-text">${fmtDate(seasons.goldStart)} ~ ${fmtDate(seasons.goldEnd)}</span></div>`);
-  el.innerHTML=rows.join('');
+  if(seasons.highStart&&seasons.highEnd)
+    rows.push(`<div class="season-display-row"><span class="season-badge high">하이시즌</span><span class="season-display-text">${fmtDate(seasons.highStart)} ~ ${fmtDate(seasons.highEnd)}</span></div>`);
+ el.innerHTML=rows.join('');
   el.style.display=rows.length?'':'none';
   el.style.marginBottom=rows.length?'12px':'0';
 }
