@@ -11,7 +11,7 @@
   .wrap { max-width: 480px; margin: 0 auto; padding: 12px; }
 
   /* 헤더 */
-  .header { background: #FFFDF7; border: 1.5px solid #FDE6B1; border-radius: 18px; padding: 16px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(180,160,120,0.1); }
+  .header { background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 18px; padding: 16px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(180,160,120,0.1); }
   .header h1 { font-size: 17px; font-weight: 800; color: #5C5040; margin-bottom: 12px; }
 
   /* 시즌 */
@@ -22,25 +22,25 @@
   .season-label.high { background: #E0A458; }
   .season-label.gold { background: #C0834A; }
   .season-dates { display: flex; align-items: center; gap: 5px; flex: 1; }
-  .season-dates input[type="date"] { flex: 1; padding: 5px 7px; border: 1.5px solid #FDE6B1; border-radius: 9px; font-size: 12px; font-family: 'Nanum Gothic', sans-serif; color: #5C5040; background: #FFFDF7; outline: none; }
-  .season-dates input[type="date"]:focus { border-color: #C0A875; }
+  .season-dates input[type="date"] { flex: 1; padding: 5px 7px; border: 1.5px solid #FFF1D1; border-radius: 9px; font-size: 12px; font-family: 'Nanum Gothic', sans-serif; color: #5C5040; background: #FFFDF7; outline: none; }
+  .season-dates input[type="date"]:focus { border-color: #FDE6B1; }
   .season-dates span { font-size: 12px; color: #B0A090; font-weight: 700; }
   .season-save-btn { background: #D4C4A0; border: none; border-radius: 9px; padding: 5px 11px; font-size: 11px; font-weight: 800; color: #5C5040; cursor: pointer; white-space: nowrap; font-family: 'Nanum Gothic', sans-serif; }
   .season-save-btn:active { background: #C4B490; }
 
   /* 네비 */
   .nav { display: flex; gap: 8px; align-items: center; }
-  .nav select { flex: 1; padding: 8px 6px; border: 1.5px solid #FDE6B1; border-radius: 11px; font-size: 14px; font-weight: 800; background: #FFFDF7; color: #5C5040; appearance: none; text-align: center; font-family: 'Nanum Gothic', sans-serif; }
+  .nav select { flex: 1; padding: 8px 6px; border: 1.5px solid #FFF1D1; border-radius: 11px; font-size: 14px; font-weight: 800; background: #FFFDF7; color: #5C5040; appearance: none; text-align: center; font-family: 'Nanum Gothic', sans-serif; }
   .nav-arrow { background: #EDE8DC; border: none; border-radius: 10px; width: 34px; height: 34px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #7A6A50; font-weight: 800; }
   .nav-arrow:active { background: #DDD8CC; }
 
   /* 탭 */
-  .tab-bar { display: flex; background: #FFFDF7; border: 1.5px solid #FDE6B1; border-radius: 14px; padding: 4px; margin-bottom: 10px; gap: 4px; box-shadow: 0 1px 5px rgba(180,160,120,0.08); }
+  .tab-bar { display: flex; background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 14px; padding: 4px; margin-bottom: 10px; gap: 4px; box-shadow: 0 1px 5px rgba(180,160,120,0.08); }
   .tab-bar button { flex: 1; padding: 9px 4px; font-size: 13px; font-weight: 700; background: transparent; border: none; cursor: pointer; color: #B0A090; border-radius: 10px; transition: all 0.15s; font-family: 'Nanum Gothic', sans-serif; }
-  .tab-bar button.active { background: #C0A875; color: #fff; }
+  .tab-bar button.active { background: #FDE6B1; color: #fff; }
 
   /* 카드 */
-  .card { background: #FFFDF7; border: 1.5px solid #FDE6B1; border-radius: 16px; padding: 14px; box-shadow: 0 1px 6px rgba(180,160,120,0.08); margin-bottom: 10px; }
+  .card { background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 16px; padding: 14px; box-shadow: 0 1px 6px rgba(180,160,120,0.08); margin-bottom: 10px; }
 
   /* 달력 */
   .cal-wrap { touch-action: pan-y; user-select: none; }
@@ -51,7 +51,7 @@
   .cell { min-height: 74px; background: #FFFDF7; border: 1.5px solid #EDE8DC; border-radius: 9px; padding: 4px 3px; cursor: pointer; transition: background 0.1s; overflow: hidden; }
   .cell:active { background: #F0EAD8; }
   .cell.empty { background: transparent; border-color: transparent; cursor: default; }
-  .cell.today { border: 2px solid #C0A875; background: #FAF7EE; }
+  .cell.today { border: 2px solid #FDE6B1; background: #FAF7EE; }
   .dn { font-size: 12px; font-weight: 800; line-height: 1; margin-bottom: 3px; color: #5C5040; }
   .cell.sun .dn   { color: #C0504A; }
   .cell.sat .dn   { color: #4A7AAA; }
@@ -64,7 +64,7 @@
   .form-group { margin-bottom: 10px; }
   .form-group label { font-size: 13px; color: #7A6A50; display: block; margin-bottom: 5px; font-weight: 700; }
   .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1.5px solid #FDE6B1; border-radius: 11px; font-size: 14px; background: #FFFDF7; color: #3D3730; outline: none; font-family: 'Nanum Gothic', sans-serif; }
-  .form-group input:focus, .form-group select:focus { border-color: #C0A875; }
+  .form-group input:focus, .form-group select:focus { border-color: #FDE6B1; }
   .product-entry { background: #FAF7EF; border: 1.5px solid #FDE6B1; border-radius: 12px; padding: 12px; margin-bottom: 8px; position: relative; }
   .del-btn { position: absolute; top: 8px; right: 10px; background: #EDE8DC; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; color: #A09070; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
   .add-product-btn { width: 100%; padding: 10px; font-size: 13px; border: 1.5px dashed #C8BCA8; border-radius: 11px; background: transparent; cursor: pointer; color: #A09070; margin-bottom: 10px; font-weight: 700; font-family: 'Nanum Gothic', sans-serif; }
