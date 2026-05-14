@@ -194,7 +194,11 @@
         <span class="season-input-label gold">골드시즌</span>
         <input type="date" id="sGoldStart"><span>~</span><input type="date" id="sGoldEnd">
       </div>
-      <button class="setting-save-btn" onclick="saveSeason()">시즌 기간 저장</button>
+ <div class="season-input-row">
+        <span class="season-input-label high">하이시즌</span>
+        <input type="date" id="sHighStart"><span>~</span><input type="date" id="sHighEnd">
+      </div>
+     <button class="setting-save-btn" onclick="saveSeason()">시즌 기간 저장</button>
     </div>
     <div class="card">
       <div class="section-title">공휴일 관리</div>
@@ -338,12 +342,6 @@ function applySeasonInputs(){
   document.getElementById('sHighEnd').value  =seasons.highEnd  ||'';
   document.getElementById('sGoldStart').value=seasons.goldStart||'';
   document.getElementById('sGoldEnd').value  =seasons.goldEnd  ||'';
-  document.getElementById('sHighStart').value=seasons.highStart||'';
-  document.getElementById('sHighEnd').value  =seasons.highEnd  ||'';
-  document.getElementById('sLowStart').value =seasons.lowStart ||'';
-  document.getElementById('sLowEnd').value   =seasons.lowEnd   ||'';
-  document.getElementById('sHighStart').value=seasons.highStart||'';
-  document.getElementById('sHighEnd').value  =seasons.highEnd  ||'';
 }
 async function saveSeason(){
   seasons.lowStart =document.getElementById('sLowStart').value;
@@ -352,12 +350,6 @@ async function saveSeason(){
   seasons.highEnd  =document.getElementById('sHighEnd').value;
   seasons.goldStart=document.getElementById('sGoldStart').value;
   seasons.goldEnd  =document.getElementById('sGoldEnd').value;
-  seasons.highStart=document.getElementById('sHighStart').value;
-  seasons.highEnd  =document.getElementById('sHighEnd').value;
-  seasons.lowStart =document.getElementById('sLowStart').value;
-  seasons.lowEnd   =document.getElementById('sLowEnd').value;
-  seasons.highStart=document.getElementById('sHighStart').value;
-  seasons.highEnd  =document.getElementById('sHighEnd').value;
   await saveAll();
   renderSeasonDisplay();
   showToast('✅ 시즌 기간이 저장됐습니다!');
