@@ -338,6 +338,12 @@ function applySeasonInputs(){
   document.getElementById('sHighEnd').value  =seasons.highEnd  ||'';
   document.getElementById('sGoldStart').value=seasons.goldStart||'';
   document.getElementById('sGoldEnd').value  =seasons.goldEnd  ||'';
+  document.getElementById('sHighStart').value=seasons.highStart||'';
+  document.getElementById('sHighEnd').value  =seasons.highEnd  ||'';
+  document.getElementById('sLowStart').value =seasons.lowStart ||'';
+  document.getElementById('sLowEnd').value   =seasons.lowEnd   ||'';
+  document.getElementById('sHighStart').value=seasons.highStart||'';
+  document.getElementById('sHighEnd').value  =seasons.highEnd  ||'';
 }
 async function saveSeason(){
   seasons.lowStart =document.getElementById('sLowStart').value;
@@ -346,6 +352,12 @@ async function saveSeason(){
   seasons.highEnd  =document.getElementById('sHighEnd').value;
   seasons.goldStart=document.getElementById('sGoldStart').value;
   seasons.goldEnd  =document.getElementById('sGoldEnd').value;
+  seasons.highStart=document.getElementById('sHighStart').value;
+  seasons.highEnd  =document.getElementById('sHighEnd').value;
+  seasons.lowStart =document.getElementById('sLowStart').value;
+  seasons.lowEnd   =document.getElementById('sLowEnd').value;
+  seasons.highStart=document.getElementById('sHighStart').value;
+  seasons.highEnd  =document.getElementById('sHighEnd').value;
   await saveAll();
   renderSeasonDisplay();
   showToast('✅ 시즌 기간이 저장됐습니다!');
