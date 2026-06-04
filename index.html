@@ -107,9 +107,9 @@
 
   /* 목록 월 필터 */
   .list-filter { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
-  .list-filter select { flex: 1; padding: 8px 10px; border: 1.5px solid #FDE6B1; border-radius: 11px; font-size: 13px; font-weight: 700; background: #FFFDF7; color: #5C5040; font-family: 'Nanum Gothic', sans-serif; outline: none; }
+  .list-filter select { flex: 1; padding: 8px 10px; border: 1.5px solid #FDE6B1; border-radius: 11px; font-size: 13px; font-weight: 700; background: #FFFDF7; color: #5C5040; font-family: 'Nanum Gothic', sans-serif; outline: none; appearance: none; text-align: center; }
   .list-filter select:focus { border-color: #C0A875; }
-  .list-filter-label { font-size: 12px; color: #A09070; font-weight: 700; white-space: nowrap; }
+  .list-swipe-wrap { touch-action: pan-y; user-select: none; }
 
   .list-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 1.5px dashed #EDE8DC; }
   .list-item:last-child { border-bottom: none; }
@@ -263,13 +263,16 @@
   <div id="tabList" style="display:none;">
     <div class="card">
       <div class="list-filter">
-        <span class="list-filter-label">월 선택</span>
+        <button class="nav-arrow" onclick="listChangeMonth(-1)">‹</button>
         <select id="listYear" onchange="renderList()"></select>
         <select id="listMonth" onchange="renderList()">
           <option value="all">전체</option>
         </select>
+        <button class="nav-arrow" onclick="listChangeMonth(1)">›</button>
       </div>
-      <div id="listView"></div>
+      <div class="list-swipe-wrap" id="listSwipeWrap">
+        <div id="listView"></div>
+      </div>
     </div>
   </div>
 
@@ -679,8 +682,15 @@ function openDayModal(ds,d,m,y){
   else{
     ps.forEach(p=>{
       const c=getColor(p);
+      const idx=promos.indexOf(p);
       html+=`<div class="promo-card" style="border-color:${hexToRgba(c,0.4)};">`;
-      html+=`<div class="pname"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}</div>`;
+      html+=`<div class="pname" style="justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}
+        </div>
+        <button onclick="document.getElementById('dayModal').style.display='none';startEdit(${idx});"
+          style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button>
+      </div>`;
       html+=`<div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;
       if(p.products&&p.products.length>0){
         p.products.forEach(pr=>{
@@ -835,6 +845,30 @@ async function init(){
   renderCal();
   setupDateInputs();
   renderSwatches();
+  // 목록 탭 스와이프
+  const lsw=document.getElementById('listSwipeWrap');
+  let lsx=0,lsy=0;
+  lsw.addEventListener('touchstart',e=>{lsx=e.touches[0].clientX;lsy=e.touches[0].clientY;},{passive:true});
+  lsw.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-lsx,dy=e.changedTouches[0].clientY-lsy;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40)listChangeMonth(dx<0?1:-1);
+  },{passive:true});
+}
+
+function listChangeMonth(dir){
+  const mSel=document.getElementById('listMonth');
+  if(mSel.value==='all') return;
+  let y=+document.getElementById('listYear').value;
+  let m=parseInt(mSel.value);
+  m+=dir;
+  if(m<1){m=12;y--;}
+  if(m>12){m=1;y++;}
+  const years=[...document.getElementById('listYear').options].map(o=>+o.value);
+  if(y<years[0])y=years[0];
+  if(y>years[years.length-1])y=years[years.length-1];
+  document.getElementById('listYear').value=y;
+  mSel.value=m;
+  renderList();
 }
 init();
 </script>
