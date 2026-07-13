@@ -688,10 +688,12 @@ function openDayModal(ds,d,m,y){
         <div style="display:flex;align-items:center;gap:6px;">
           <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}
         </div>
-        <button onclick="document.getElementById('dayModal').style.display='none';startEdit(${idx});"
-          style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button>
-        <button onclick="document.getElementById('dayModal').style.display='none';startCopy(${idx});"
-          style="background:#EDE8DC;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button>
+        <div style="display:flex;gap:5px;">
+          <button onclick="document.getElementById('dayModal').style.display='none';startEdit(${idx});"
+            style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button>
+          <button onclick="document.getElementById('dayModal').style.display='none';startCopy(${idx});"
+            style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button>
+        </div>
       </div>`;
       html+=`<div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;
       if(p.products&&p.products.length>0){
