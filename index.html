@@ -690,6 +690,8 @@ function openDayModal(ds,d,m,y){
         </div>
         <button onclick="document.getElementById('dayModal').style.display='none';startEdit(${idx});"
           style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button>
+        <button onclick="document.getElementById('dayModal').style.display='none';startCopy(${idx});"
+          style="background:#EDE8DC;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button>
       </div>`;
       html+=`<div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;
       if(p.products&&p.products.length>0){
@@ -827,6 +829,7 @@ function renderList(){
       </div>
       <div class="list-actions">
         <button class="list-edit" onclick="startEdit(${p.idx})">✏️</button>
+        <button class="list-edit" onclick="startCopy(${p.idx})">📋</button>
         <button class="list-del"  onclick="deletePromo(${p.idx})">🗑️</button>
       </div>
     </div>`;
@@ -837,6 +840,24 @@ async function deletePromo(idx){
   if(!confirm('이 프로모션을 삭제하시겠습니까?'))return;
   promos.splice(idx,1);await saveAll();
   showToast('🗑 삭제됐습니다.');renderList();renderCal();
+}
+
+function startCopy(idx){
+  const p=promos[idx];
+  // 날짜는 비우고 나머지 내용만 복사
+  editIdx=-1;selectedColor=p.color||'';
+  clearDateVal('start');clearDateVal('end');
+  document.getElementById('fType').value=p.type;
+  document.getElementById('productList').innerHTML='';
+  productEntries=[];productCount=0;
+  if(p.products&&p.products.length>0)p.products.forEach(pr=>addProduct(pr));
+  renderSwatches();
+  document.getElementById('editBanner').style.display='';
+  document.getElementById('editBanner').textContent='📋 복사 모드 — 날짜를 입력하고 내용 확인 후 등록하세요';
+  document.getElementById('submitBtn').textContent='프로모션 등록';
+  document.getElementById('cancelBtn').style.display='';
+  switchTab('form');
+  showToast('📋 내용이 복사됐어요! 날짜를 입력해 주세요.');
 }
 
 async function init(){
