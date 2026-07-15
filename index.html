@@ -8,8 +8,47 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Nanum Gothic', sans-serif; background: #F7F4EE; color: #3D3730; font-size: 15px; }
-  .wrap { max-width: 480px; margin: 0 auto; padding: 12px; }
 
+  /* ── 모바일 기본 레이아웃 ── */
+  .wrap { max-width: 480px; margin: 0 auto; padding: 12px; }
+  .pc-layout { display: none; }
+
+  /* ── PC 레이아웃 (768px 이상) ── */
+  @media (min-width: 768px) {
+    body { overflow: hidden; height: 100vh; }
+    .wrap { display: none; }
+    .pc-layout { display: flex; flex-direction: column; height: 100vh; max-width: 1200px; margin: 0 auto; padding: 12px; gap: 10px; }
+    .pc-header { background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 16px; padding: 14px 18px; box-shadow: 0 2px 8px rgba(180,160,120,0.1); flex-shrink: 0; }
+    .pc-header h1 { font-size: 17px; font-weight: 800; color: #5C5040; margin-bottom: 6px; }
+    .pc-header-row { display: flex; align-items: center; gap: 16px; }
+    .pc-season-display { display: flex; flex-wrap: wrap; gap: 6px 14px; flex: 1; }
+    .pc-season-row { display: flex; align-items: center; gap: 6px; }
+    .pc-tab-bar { display: flex; background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 12px; padding: 4px; gap: 3px; box-shadow: 0 1px 5px rgba(180,160,120,0.08); flex-shrink: 0; }
+    .pc-tab-bar button { flex: 1; padding: 8px 12px; font-size: 13px; font-weight: 700; background: transparent; border: none; cursor: pointer; color: #5a5959; border-radius: 9px; transition: all 0.15s; font-family: 'Nanum Gothic', sans-serif; white-space: nowrap; }
+    .pc-tab-bar button.active { background: #FDE6B1; color: #5C5040; }
+    .pc-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; min-height: 0; }
+    .pc-left { display: flex; flex-direction: column; min-height: 0; }
+    .pc-right { overflow-y: auto; min-height: 0; }
+    .pc-cal-card { background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 16px; padding: 14px; box-shadow: 0 1px 6px rgba(180,160,120,0.08); flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .pc-cal-wrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .pc-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; flex: 1; }
+    .pc-day-label { text-align: center; font-size: 11px; font-weight: 800; color: #5a5959; padding: 4px 0 6px; }
+    .pc-day-label:first-child { color: #dc4038; }
+    .pc-day-label:last-child  { color: #4A7AAA; }
+    .pc-cell { background: #FFFDF7; border: 1.5px solid #EDE8DC; border-radius: 8px; padding: 4px; cursor: pointer; transition: background 0.1s; overflow: hidden; display: flex; flex-direction: column; }
+    .pc-cell:hover { background: #FFF5DC; }
+    .pc-cell.pc-empty { background: transparent; border-color: transparent; cursor: default; }
+    .pc-cell.pc-today { border: 2px solid #FDE6B1; background: #FAF7EE; }
+    .pc-cell.pc-selected { border: 2px solid #C0A875 !important; background: #FFF5DC !important; }
+    .pc-dn { font-size: 11px; font-weight: 800; line-height: 1; margin-bottom: 2px; color: #5C5040; }
+    .pc-cell.pc-sun .pc-dn { color: #dc4038; }
+    .pc-cell.pc-sat .pc-dn { color: #4A7AAA; }
+    .pc-cell.pc-hol .pc-dn { color: #dc4038; }
+    .pc-promo-pill { font-size: 7.5px; padding: 1px 3px; border-radius: 3px; margin-bottom: 1px; white-space: normal; line-height: 1.3; font-weight: 700; word-break: keep-all; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .pc-detail-empty { display: flex; align-items: center; justify-content: center; height: 100%; color: #C8BCA8; font-size: 14px; font-weight: 700; text-align: center; }
+  }
+
+  /* ── 공통 컴포넌트 ── */
   .header { background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 18px; padding: 16px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(180,160,120,0.1); }
   .header h1 { font-size: 17px; font-weight: 800; color: #5C5040; margin-bottom: 8px; }
   .season-display { display: flex; flex-direction: column; gap: 4px; }
@@ -23,14 +62,12 @@
   .nav select { flex: 1; padding: 8px 6px; border: 1.5px solid #FFF1D1; border-radius: 11px; font-size: 14px; font-weight: 800; background: #FFFDF7; color: #5C5040; appearance: none; text-align: center; font-family: 'Nanum Gothic', sans-serif; }
   .nav-arrow { background: #fff2d4; border: none; border-radius: 10px; width: 34px; height: 34px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #7A6A50; font-weight: 800; }
   .nav-arrow:active { background: #DDD8CC; }
-
   .tab-bar { display: flex; background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 14px; padding: 4px; margin-bottom: 10px; gap: 3px; box-shadow: 0 1px 5px rgba(180,160,120,0.08); }
-  .tab-bar button { flex: 1; padding: 8px 2px; font-size: 12px; font-weight: 700; background: transparent; border: none; cursor: pointer; color: #5a5959; border-radius: 10px; transition: all 0.15s; font-family: 'Nanum Gothic', sans-serif; }
+  .tab-bar button { flex: 1; padding: 8px 2px; font-size: 11px; font-weight: 700; background: transparent; border: none; cursor: pointer; color: #5a5959; border-radius: 10px; transition: all 0.15s; font-family: 'Nanum Gothic', sans-serif; }
   .tab-bar button.active { background: #FDE6B1; color: #5C5040; }
-
   .card { background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 16px; padding: 14px; box-shadow: 0 1px 6px rgba(180,160,120,0.08); margin-bottom: 10px; }
 
-  /* 달력 */
+  /* 달력 (모바일) */
   .cal-wrap { touch-action: pan-y; user-select: none; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
   .day-label { text-align: center; font-size: 11px; font-weight: 800; color: #5a5959; padding: 4px 0 6px; }
@@ -59,13 +96,10 @@
   .date-d { width: 24px; }
   .date-sep { color: #C8BCA8; font-size: 13px; font-weight: 700; }
   .date-cal-btn { margin-left: auto; background: transparent; border: none; cursor: pointer; font-size: 16px; padding: 0 0 0 6px; color: #C0A875; }
-
-  /* 날짜 선택 달력 팝업 */
   .date-picker-popup { display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #FFFDF7; border: 1.5px solid #FFF1D1; border-radius: 14px; padding: 12px; box-shadow: 0 4px 16px rgba(180,160,120,0.18); z-index: 50; }
   .date-picker-popup.open { display: block; }
   .dp-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .dp-nav button { background: #fff2d4; border: none; border-radius: 8px; width: 28px; height: 28px; font-size: 15px; cursor: pointer; color: #7A6A50; font-weight: 800; display: flex; align-items: center; justify-content: center; }
-  .dp-nav button:active { background: #DDD8CC; }
   .dp-title { font-size: 13px; font-weight: 800; color: #5C5040; }
   .dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
   .dp-dlabel { text-align: center; font-size: 10px; font-weight: 800; color: #B0A090; padding: 2px 0 4px; }
@@ -75,7 +109,7 @@
   .dp-cell:hover { background: #FFF1D1; }
   .dp-cell.empty { cursor: default; }
   .dp-cell.dp-today { background: #FFF1D1; font-weight: 800; }
-  .dp-cell.dp-selected { background: #C0A875 !important; color: #fff !important; border-radius: 6px; }
+  .dp-cell.dp-selected { background: #C0A875 !important; color: #fff !important; }
   .dp-cell.dp-sun { color: #dc4038; }
   .dp-cell.dp-sat { color: #4A7AAA; }
   .dp-cell.dp-hol { color: #dc4038; }
@@ -90,27 +124,22 @@
   .product-entry { background: #FAF7EF; border: 1.5px solid #FDE6B1; border-radius: 12px; padding: 12px; margin-bottom: 8px; position: relative; }
   .del-btn { position: absolute; top: 8px; right: 10px; background: #EDE8DC; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; color: #A09070; font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
   .add-product-btn { width: 100%; padding: 10px; font-size: 13px; border: 1.5px dashed #C8BCA8; border-radius: 11px; background: transparent; cursor: pointer; color: #A09070; margin-bottom: 10px; font-weight: 700; font-family: 'Nanum Gothic', sans-serif; }
-  .add-product-btn:active { background: #F0EAD8; }
   .submit-btn { width: 100%; padding: 13px; font-size: 15px; font-weight: 800; background: #FDE6B1; color: #5C5040; border: none; border-radius: 12px; cursor: pointer; font-family: 'Nanum Gothic', sans-serif; }
   .submit-btn:active { background: #f5d48a; }
   .submit-btn:disabled { background: #D0C8BC; color: #fff; cursor: default; }
   .cancel-btn { width: 100%; padding: 11px; font-size: 14px; font-weight: 700; background: #EDE8DC; color: #7A6A50; border: none; border-radius: 12px; cursor: pointer; margin-top: 8px; font-family: 'Nanum Gothic', sans-serif; }
-  .cancel-btn:active { background: #DDD8CC; }
 
   /* 색상 선택 */
   .color-picker-wrap { margin-bottom: 10px; }
   .color-picker-wrap label { font-size: 13px; color: #7A6A50; display: block; margin-bottom: 8px; font-weight: 700; }
   .color-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
   .swatch { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2.5px solid transparent; transition: transform 0.1s, border-color 0.1s; flex-shrink: 0; }
-  .swatch:active { transform: scale(0.9); }
   .swatch.selected { border-color: #5C5040; transform: scale(1.15); }
 
-  /* 목록 월 필터 */
+  /* 목록 */
   .list-filter { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
   .list-filter select { flex: 1; padding: 8px 10px; border: 1.5px solid #FDE6B1; border-radius: 11px; font-size: 13px; font-weight: 700; background: #FFFDF7; color: #5C5040; font-family: 'Nanum Gothic', sans-serif; outline: none; appearance: none; text-align: center; }
-  .list-filter select:focus { border-color: #C0A875; }
   .list-swipe-wrap { touch-action: pan-y; user-select: none; }
-
   .list-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 1.5px dashed #EDE8DC; }
   .list-item:last-child { border-bottom: none; }
   .color-bar { width: 4px; border-radius: 2px; align-self: stretch; flex-shrink: 0; min-height: 40px; }
@@ -118,13 +147,21 @@
   .list-edit, .list-del { background: transparent; border: none; cursor: pointer; font-size: 17px; padding: 4px; }
   .badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 700; display: inline-block; margin: 2px 2px 2px 0; }
 
+  /* 검색 */
+  .search-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+  .search-bar input { flex: 1; padding: 10px 14px; border: 1.5px solid #FDE6B1; border-radius: 11px; font-size: 14px; background: #FFFDF7; color: #3D3730; outline: none; font-family: 'Nanum Gothic', sans-serif; }
+  .search-bar input:focus { border-color: #C0A875; }
+  .search-year-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .search-year-btn { padding: 5px 14px; border: 1.5px solid #FDE6B1; border-radius: 20px; font-size: 12px; font-weight: 700; background: #FFFDF7; color: #7A6A50; cursor: pointer; font-family: 'Nanum Gothic', sans-serif; }
+  .search-year-btn.active { background: #FDE6B1; color: #5C5040; border-color: #C0A875; }
+  .search-result-count { font-size: 12px; color: #A09070; font-weight: 700; margin-bottom: 8px; }
+
   /* 설정 */
   .season-add-row { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
   .season-select { padding: 7px 8px; border: 1.5px solid #FDE6B1; border-radius: 9px; font-size: 12px; font-family: 'Nanum Gothic', sans-serif; color: #5C5040; background: #FFFDF7; outline: none; font-weight: 800; }
   .season-date-input { flex: 1; padding: 7px 6px; border: 1.5px solid #FDE6B1; border-radius: 9px; font-size: 12px; font-family: 'Nanum Gothic', sans-serif; color: #5C5040; background: #FFFDF7; outline: none; }
   .season-tilde { font-size: 12px; color: #5a5959; font-weight: 700; flex-shrink: 0; }
   .season-add-btn { padding: 7px 11px; background: #FDE6B1; border: none; border-radius: 9px; font-size: 12px; font-weight: 800; color: #5C5040; cursor: pointer; white-space: nowrap; font-family: 'Nanum Gothic', sans-serif; flex-shrink: 0; }
-  .season-add-btn:active { background: #f5d48a; }
   .season-list { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
   .season-item { display: flex; align-items: center; justify-content: space-between; background: #FAF7EF; border: 1.5px solid #FDE6B1; border-radius: 9px; padding: 7px 10px; }
   .season-item-left { display: flex; align-items: center; gap: 7px; }
@@ -134,18 +171,16 @@
   .season-item-badge.gold { background: #C0834A; }
   .season-item-text { font-size: 12px; color: #5a5959; font-weight: 700; }
   .season-item-del { background: transparent; border: none; cursor: pointer; font-size: 15px; padding: 2px 4px; color: #C8BCA8; }
-
   .holiday-input-row { display: flex; gap: 6px; margin-bottom: 8px; }
   .holiday-input-row input { flex: 1; padding: 9px 10px; border: 1.5px solid #FDE6B1; border-radius: 10px; font-size: 13px; background: #FFFDF7; color: #3D3730; outline: none; font-family: 'Nanum Gothic', sans-serif; }
-  .holiday-input-row input:focus { border-color: #C0A875; }
   .holiday-add-btn { padding: 9px 14px; background: #FDE6B1; border: none; border-radius: 10px; font-size: 13px; font-weight: 800; color: #5C5040; cursor: pointer; white-space: nowrap; font-family: 'Nanum Gothic', sans-serif; }
-  .holiday-add-btn:active { background: #f5d48a; }
   .holiday-list { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
   .holiday-item { display: flex; align-items: center; justify-content: space-between; background: #FAF7EF; border: 1.5px solid #FDE6B1; border-radius: 9px; padding: 7px 10px; }
   .holiday-item-date { font-size: 12px; color: #dc4038; font-weight: 800; margin-right: 6px; }
   .holiday-item-text { font-size: 13px; color: #5a5959; font-weight: 700; }
   .holiday-del-btn { background: transparent; border: none; cursor: pointer; font-size: 16px; padding: 2px 4px; color: #C8BCA8; }
 
+  /* 모달 (모바일만) */
   .modal-bg { position: fixed; inset: 0; background: rgba(60,50,40,0.35); display: flex; align-items: flex-end; justify-content: center; z-index: 100; }
   .modal { background: #FFFDF7; border-radius: 22px 22px 0 0; width: 100%; max-width: 480px; padding: 16px 16px 36px; max-height: 82vh; overflow-y: auto; }
   .modal-handle { width: 38px; height: 4px; background: #EDE8DC; border-radius: 2px; margin: 0 auto 16px; }
@@ -157,7 +192,7 @@
   .product-row .ptype { color: #7A6A50; font-weight: 700; }
 
   .edit-banner { background: #FFF8E8; border: 1.5px solid #E8C87A; border-radius: 11px; padding: 9px 14px; font-size: 13px; color: #7A5C00; margin-bottom: 10px; text-align: center; font-weight: 700; }
-  .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: #5C5040; color: #fff; padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 200; white-space: nowrap; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: #5C5040; color: #fff; padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 300; white-space: nowrap; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
   .toast.show { opacity: 1; }
   .loading { text-align: center; padding: 32px 0; color: #C8BCA8; font-size: 14px; font-weight: 700; }
   .spinner { width: 24px; height: 24px; border: 2.5px solid #EDE8DC; border-top-color: #C0A875; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 10px; }
@@ -166,6 +201,8 @@
 </style>
 </head>
 <body>
+
+<!-- ══ 모바일 레이아웃 ══ -->
 <div class="wrap">
   <div class="header">
     <h1>🗓 프로모션 캘린더</h1>
@@ -177,26 +214,22 @@
       <button class="nav-arrow" onclick="changeMonth(1)">›</button>
     </div>
   </div>
-
   <div class="tab-bar">
     <button class="active" onclick="switchTab('cal')">🗓 달력</button>
     <button onclick="switchTab('form')">✏️ 등록</button>
     <button onclick="switchTab('list')">📋 목록</button>
+    <button onclick="switchTab('search')">🔍 검색</button>
     <button onclick="switchTab('setting')">⚙️ 설정</button>
   </div>
-
-  <!-- 달력 -->
   <div class="card" id="tabCal">
     <div class="cal-wrap" id="calWrap">
       <div class="cal-grid" id="calGrid"></div>
     </div>
     <div class="swipe-hint">← 스와이프로 월 이동 →</div>
   </div>
-
-  <!-- 등록/수정 -->
   <div id="tabForm" style="display:none;">
     <div id="editBanner" class="edit-banner" style="display:none;">✏️ 수정 모드 — 내용 변경 후 저장하세요</div>
-    <div class="card">
+    <div class="card" id="formCard1">
       <div class="section-title">프로모션 정보</div>
       <div class="form-group">
         <label>시작일</label>
@@ -244,9 +277,8 @@
         <label>프로모션 구분</label>
         <input type="text" id="fType" placeholder="예: 주말 특가, 얼리버드...">
       </div>
-      <!-- 색상 선택: 항상 표시 -->
       <div class="color-picker-wrap">
-        <label>색상 선택 <span id="colorAuto" style="font-size:11px;color:#C8BCA8;font-weight:400;">(미선택 시 자동)</span></label>
+        <label>색상 선택 <span style="font-size:11px;color:#C8BCA8;font-weight:400;">(미선택 시 자동)</span></label>
         <div class="color-swatches" id="colorSwatches"></div>
       </div>
     </div>
@@ -258,8 +290,6 @@
       <button class="cancel-btn" id="cancelBtn" onclick="cancelEdit()" style="display:none;">취소</button>
     </div>
   </div>
-
-  <!-- 목록 -->
   <div id="tabList" style="display:none;">
     <div class="card">
       <div class="list-filter">
@@ -275,8 +305,16 @@
       </div>
     </div>
   </div>
-
-  <!-- 설정 -->
+  <div id="tabSearch" style="display:none;">
+    <div class="card">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="프로모션명, 상품명으로 검색..." oninput="renderSearch()">
+      </div>
+      <div class="search-year-filter" id="searchYearFilter"></div>
+      <div class="search-result-count" id="searchResultCount"></div>
+      <div id="searchView"></div>
+    </div>
+  </div>
   <div id="tabSetting" style="display:none;">
     <div class="card">
       <div class="section-title">시즌 기간 설정</div>
@@ -305,6 +343,169 @@
   </div>
 </div>
 
+<!-- ══ PC 레이아웃 ══ -->
+<div class="pc-layout">
+  <!-- PC 헤더 -->
+  <div class="pc-header">
+    <h1>🗓 프로모션 캘린더</h1>
+    <div class="pc-header-row">
+      <div class="pc-season-display" id="pcSeasonDisplay"></div>
+      <div class="nav" style="margin-top:0;flex-shrink:0;">
+        <button class="nav-arrow" onclick="changeMonth(-1)">‹</button>
+        <select id="pcSelYear"></select>
+        <select id="pcSelMonth"></select>
+        <button class="nav-arrow" onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+  </div>
+  <!-- PC 탭바 -->
+  <div class="pc-tab-bar">
+    <button class="active" onclick="pcSwitchTab('cal')">🗓 달력</button>
+    <button onclick="pcSwitchTab('form')">✏️ 등록</button>
+    <button onclick="pcSwitchTab('list')">📋 목록</button>
+    <button onclick="pcSwitchTab('search')">🔍 검색</button>
+    <button onclick="pcSwitchTab('setting')">⚙️ 설정</button>
+  </div>
+  <!-- PC 바디 -->
+  <div class="pc-body">
+    <!-- 왼쪽: 달력 (항상 표시) -->
+    <div class="pc-left">
+      <div class="pc-cal-card">
+        <div class="pc-cal-wrap">
+          <div class="pc-cal-grid" id="pcCalGrid"></div>
+        </div>
+      </div>
+    </div>
+    <!-- 오른쪽: 탭 내용 -->
+    <div class="pc-right" id="pcRight">
+      <!-- 날짜 상세 -->
+      <div id="pcTabCal">
+        <div class="pc-detail-empty" id="pcDetailEmpty">
+          <div>📅<br><br>날짜를 클릭하면<br>프로모션 내용이 표시됩니다</div>
+        </div>
+        <div id="pcDetailContent" style="display:none;"></div>
+      </div>
+      <!-- 등록 -->
+      <div id="pcTabForm" style="display:none;">
+        <div id="pcEditBanner" class="edit-banner" style="display:none;margin-bottom:10px;">✏️ 수정 모드</div>
+        <div class="card">
+          <div class="section-title">프로모션 정보</div>
+          <div class="form-group">
+            <label>시작일</label>
+            <div class="date-input-wrap" id="pcStartWrap">
+              <div class="date-input-fields">
+                <input class="date-y" id="pcFStartY" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY">
+                <span class="date-sep">/</span>
+                <input class="date-m" id="pcFStartM" type="text" inputmode="numeric" maxlength="2" placeholder="MM">
+                <span class="date-sep">/</span>
+                <input class="date-d" id="pcFStartD" type="text" inputmode="numeric" maxlength="2" placeholder="DD">
+                <button class="date-cal-btn" onclick="togglePicker('pcStart')" type="button">📅</button>
+              </div>
+              <div class="date-picker-popup" id="pickerPcStart">
+                <div class="dp-nav">
+                  <button onclick="dpMove('pcStart',-1)" type="button">‹</button>
+                  <span class="dp-title" id="dpTitlePcStart"></span>
+                  <button onclick="dpMove('pcStart',1)" type="button">›</button>
+                </div>
+                <div class="dp-grid" id="dpGridPcStart"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>종료일</label>
+            <div class="date-input-wrap" id="pcEndWrap">
+              <div class="date-input-fields">
+                <input class="date-y" id="pcFEndY" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY">
+                <span class="date-sep">/</span>
+                <input class="date-m" id="pcFEndM" type="text" inputmode="numeric" maxlength="2" placeholder="MM">
+                <span class="date-sep">/</span>
+                <input class="date-d" id="pcFEndD" type="text" inputmode="numeric" maxlength="2" placeholder="DD">
+                <button class="date-cal-btn" onclick="togglePicker('pcEnd')" type="button">📅</button>
+              </div>
+              <div class="date-picker-popup" id="pickerPcEnd">
+                <div class="dp-nav">
+                  <button onclick="dpMove('pcEnd',-1)" type="button">‹</button>
+                  <span class="dp-title" id="dpTitlePcEnd"></span>
+                  <button onclick="dpMove('pcEnd',1)" type="button">›</button>
+                </div>
+                <div class="dp-grid" id="dpGridPcEnd"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>프로모션 구분</label>
+            <input type="text" id="pcFType" placeholder="예: 주말 특가, 얼리버드...">
+          </div>
+          <div class="color-picker-wrap">
+            <label>색상 선택 <span style="font-size:11px;color:#C8BCA8;font-weight:400;">(미선택 시 자동)</span></label>
+            <div class="color-swatches" id="pcColorSwatches"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">판매 상품 (선택)</div>
+          <div id="pcProductList"></div>
+          <button class="add-product-btn" onclick="pcAddProduct()">＋ 상품 추가</button>
+          <button class="submit-btn" id="pcSubmitBtn" onclick="pcSubmitPromo()">프로모션 등록</button>
+          <button class="cancel-btn" id="pcCancelBtn" onclick="pcCancelEdit()" style="display:none;">취소</button>
+        </div>
+      </div>
+      <!-- 목록 -->
+      <div id="pcTabList" style="display:none;">
+        <div class="card">
+          <div class="list-filter">
+            <button class="nav-arrow" onclick="listChangeMonth(-1)">‹</button>
+            <select id="pcListYear" onchange="renderList()"></select>
+            <select id="pcListMonth" onchange="renderList()">
+              <option value="all">전체</option>
+            </select>
+            <button class="nav-arrow" onclick="listChangeMonth(1)">›</button>
+          </div>
+          <div id="pcListView"></div>
+        </div>
+      </div>
+      <!-- 검색 -->
+      <div id="pcTabSearch" style="display:none;">
+        <div class="card">
+          <div class="search-bar">
+            <input type="text" id="pcSearchInput" placeholder="프로모션명, 상품명으로 검색..." oninput="renderSearch()">
+          </div>
+          <div class="search-year-filter" id="pcSearchYearFilter"></div>
+          <div class="search-result-count" id="pcSearchResultCount"></div>
+          <div id="pcSearchView"></div>
+        </div>
+      </div>
+      <!-- 설정 -->
+      <div id="pcTabSetting" style="display:none;">
+        <div class="card">
+          <div class="section-title">시즌 기간 설정</div>
+          <div class="season-add-row">
+            <select class="season-select" id="pcSType">
+              <option value="low">로우시즌</option>
+              <option value="high">하이시즌</option>
+              <option value="gold">골드시즌</option>
+            </select>
+            <input type="date" class="season-date-input" id="pcSStart">
+            <span class="season-tilde">~</span>
+            <input type="date" class="season-date-input" id="pcSEnd">
+            <button class="season-add-btn" onclick="addSeasonPC()">추가</button>
+          </div>
+          <div class="season-list" id="pcSeasonList"></div>
+        </div>
+        <div class="card">
+          <div class="section-title">공휴일 관리</div>
+          <div class="holiday-input-row">
+            <input type="date" id="pcHDate">
+            <input type="text" id="pcHName" placeholder="공휴일명">
+            <button class="holiday-add-btn" onclick="addHolidayPC()">추가</button>
+          </div>
+          <div class="holiday-list" id="pcHolidayList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 모달 (모바일) -->
 <div id="dayModal" class="modal-bg" style="display:none;" onclick="closeBgModal(event)">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -318,108 +519,80 @@ const API_KEY='$2a$10$Ub733.j1mSI5AAaNCNWR.uDeA2PDKEYAcguN9rJSI50EjjZhXXjXK';
 const BIN_ID='6a043752250b1311c342d00e';
 const BASE='https://api.jsonbin.io/v3/b/'+BIN_ID;
 
-const PRODUCT_TYPES=[
-  '1인 종일권','1인 반일권','1인 야간권',
-  '2인 종일권','2인 반일권','2인 야간권',
-  '3인 종일권','3인 반일권','3인 야간권',
-  '4인 종일권','4인 반일권','4인 야간권',
-  '소인권(1인)'
-];
+const PRODUCT_TYPES=['1인 종일권','1인 반일권','1인 야간권','2인 종일권','2인 반일권','2인 야간권','3인 종일권','3인 반일권','3인 야간권','4인 종일권','4인 반일권','4인 야간권','소인권(1인)'];
 const SEASON_TYPES=['로우시즌','하이시즌','골드시즌'];
 const SEASON_LABEL={low:'로우시즌',high:'하이시즌',gold:'골드시즌'};
-const COLORS=[
-  '#e55d62','#e5c4bf',
-  '#faab23','#fae390',
-  '#40916C','#87b27c','#a3bb95',
-  '#005BB5','#30B0C7','#7db0c7','#9dccdc',
-  '#7774b6','#bebfd7',
-  '#9968a1','#b780a9','#cfb3c5',
-  '#FF69B4','#fcc1d3'
-];
+const COLORS=['#e55d62','#e5c4bf','#faab23','#fae390','#40916C','#87b27c','#a3bb95','#005BB5','#30B0C7','#7db0c7','#9dccdc','#7774b6','#bebfd7','#9968a1','#b780a9','#cfb3c5','#FF69B4','#fcc1d3'];
 
-function getAutoColor(type){
-  let hash=2166136261;
-  for(let i=0;i<type.length;i++){hash^=type.charCodeAt(i);hash=(hash*16777619)>>>0;}
-  return COLORS[hash%COLORS.length];
-}
-function getColor(p){
-  if(typeof p==='string')return getAutoColor(p);
-  return p.color||getAutoColor(p.type);
-}
-function hexToRgba(hex,a){
-  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return `rgba(${r},${g},${b},${a})`;
-}
-function showToast(msg,d=2200){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),d);
-}
+function getAutoColor(type){let h=2166136261;for(let i=0;i<type.length;i++){h^=type.charCodeAt(i);h=(h*16777619)>>>0;}return COLORS[h%COLORS.length];}
+function getColor(p){if(typeof p==='string')return getAutoColor(p);return p.color||getAutoColor(p.type);}
+function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+function showToast(msg,d=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function isPC(){return window.innerWidth>=768;}
 
 /* ── 색상 스와치 ── */
-let selectedColor='';
-function renderSwatches(){
-  document.getElementById('colorSwatches').innerHTML=COLORS.map(c=>`
-    <div class="swatch${c===selectedColor?' selected':''}" style="background:${c};" onclick="selectSwatch('${c}')"></div>
-  `).join('');
+let selectedColor='',pcSelectedColor='';
+function renderSwatches(target='mob'){
+  const id=target==='pc'?'pcColorSwatches':'colorSwatches';
+  const sel=target==='pc'?pcSelectedColor:selectedColor;
+  document.getElementById(id).innerHTML=COLORS.map(c=>`<div class="swatch${c===sel?' selected':''}" style="background:${c};" onclick="${target==='pc'?'pcSelectSwatch':'selectSwatch'}('${c}')"></div>`).join('');
 }
-function selectSwatch(c){
-  if(selectedColor===c){selectedColor='';} else {selectedColor=c;}
-  renderSwatches();
-}
+function selectSwatch(c){selectedColor=selectedColor===c?'':c;renderSwatches('mob');}
+function pcSelectSwatch(c){pcSelectedColor=pcSelectedColor===c?'':c;renderSwatches('pc');}
 
-/* ── 커스텀 날짜 입력 ── */
-const dpState={start:{y:new Date().getFullYear(),m:new Date().getMonth()},end:{y:new Date().getFullYear(),m:new Date().getMonth()}};
+/* ── 날짜 입력 ── */
+const dpState={start:{y:new Date().getFullYear(),m:new Date().getMonth()},end:{y:new Date().getFullYear(),m:new Date().getMonth()},pcStart:{y:new Date().getFullYear(),m:new Date().getMonth()},pcEnd:{y:new Date().getFullYear(),m:new Date().getMonth()}};
 
 function setupDateInputs(){
-  // 시작일
-  const sy=document.getElementById('fStartY'),sm=document.getElementById('fStartM'),sd=document.getElementById('fStartD');
-  sy.addEventListener('input',()=>{if(sy.value.length===4)sm.focus();});
-  sm.addEventListener('input',()=>{if(sm.value.length===2)sd.focus();});
-  // 종료일
-  const ey=document.getElementById('fEndY'),em=document.getElementById('fEndM'),ed=document.getElementById('fEndD');
-  ey.addEventListener('input',()=>{if(ey.value.length===4)em.focus();});
-  em.addEventListener('input',()=>{if(em.value.length===2)ed.focus();});
-  // 외부 클릭 시 달력 닫기
+  [['fStartY','fStartM','fStartD'],['fEndY','fEndM','fEndD'],['pcFStartY','pcFStartM','pcFStartD'],['pcFEndY','pcFEndM','pcFEndD']].forEach(([y,m,d])=>{
+    const ey=document.getElementById(y),em=document.getElementById(m),ed=document.getElementById(d);
+    if(!ey)return;
+    ey.addEventListener('input',()=>{if(ey.value.length===4)em.focus();});
+    em.addEventListener('input',()=>{if(em.value.length===2)ed.focus();});
+  });
   document.addEventListener('click',e=>{
-    if(!document.getElementById('startWrap').contains(e.target)) closePicker('start');
-    if(!document.getElementById('endWrap').contains(e.target))   closePicker('end');
+    ['start','end','pcStart','pcEnd'].forEach(w=>{
+      const wrapId=w==='start'?'startWrap':w==='end'?'endWrap':w==='pcStart'?'pcStartWrap':'pcEndWrap';
+      const el=document.getElementById(wrapId);
+      if(el&&!el.contains(e.target))closePicker(w);
+    });
   });
 }
 
 function getDateVal(which){
-  const y=document.getElementById(`f${which==='start'?'Start':'End'}Y`).value;
-  const m=document.getElementById(`f${which==='start'?'Start':'End'}M`).value;
-  const d=document.getElementById(`f${which==='start'?'Start':'End'}D`).value;
-  if(y.length===4&&m.length>=1&&d.length>=1)
-    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  const p=which==='start'?'Start':which==='end'?'End':which==='pcStart'?'PcStart':'PcEnd';
+  const y=document.getElementById(`f${p}Y`)?.value||'';
+  const m=document.getElementById(`f${p}M`)?.value||'';
+  const d=document.getElementById(`f${p}D`)?.value||'';
+  if(y.length===4&&m.length>=1&&d.length>=1)return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
   return '';
 }
 function setDateVal(which,dateStr){
-  const p=dateStr.split('-');
-  const pre=which==='start'?'Start':'End';
-  document.getElementById(`f${pre}Y`).value=p[0]||'';
-  document.getElementById(`f${pre}M`).value=p[1]?parseInt(p[1]).toString():'';
-  document.getElementById(`f${pre}D`).value=p[2]?parseInt(p[2]).toString():'';
+  const p=which==='start'?'Start':which==='end'?'End':which==='pcStart'?'PcStart':'PcEnd';
+  const parts=dateStr.split('-');
+  const el=(k)=>document.getElementById(`f${p}${k}`);
+  if(el('Y'))el('Y').value=parts[0]||'';
+  if(el('M'))el('M').value=parts[1]?parseInt(parts[1]).toString():'';
+  if(el('D'))el('D').value=parts[2]?parseInt(parts[2]).toString():'';
 }
 function clearDateVal(which){
-  const pre=which==='start'?'Start':'End';
-  ['Y','M','D'].forEach(x=>document.getElementById(`f${pre}${x}`).value='');
+  const p=which==='start'?'Start':which==='end'?'End':which==='pcStart'?'PcStart':'PcEnd';
+  ['Y','M','D'].forEach(x=>{const el=document.getElementById(`f${p}${x}`);if(el)el.value='';});
 }
-
 function togglePicker(which){
-  const pid=`picker${which==='start'?'Start':'End'}`;
-  const isOpen=document.getElementById(pid).classList.contains('open');
-  closePicker('start');closePicker('end');
+  const pid=`picker${which.charAt(0).toUpperCase()+which.slice(1)}`;
+  const isOpen=document.getElementById(pid)?.classList.contains('open');
+  ['start','end','pcStart','pcEnd'].forEach(w=>closePicker(w));
   if(!isOpen){
     const cur=getDateVal(which);
-    if(cur){const p=cur.split('-');dpState[which].y=+p[0];dpState[which].m=+p[1]-1;}
+    if(cur){const pts=cur.split('-');dpState[which].y=+pts[0];dpState[which].m=+pts[1]-1;}
     renderDpGrid(which);
-    document.getElementById(pid).classList.add('open');
+    document.getElementById(pid)?.classList.add('open');
   }
 }
 function closePicker(which){
-  document.getElementById(`picker${which==='start'?'Start':'End'}`).classList.remove('open');
+  const pid=`picker${which.charAt(0).toUpperCase()+which.slice(1)}`;
+  document.getElementById(pid)?.classList.remove('open');
 }
 function dpMove(which,dir){
   dpState[which].m+=dir;
@@ -430,42 +603,29 @@ function dpMove(which,dir){
 function renderDpGrid(which){
   const y=dpState[which].y,m=dpState[which].m;
   const mn=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  document.getElementById(`dpTitle${which==='start'?'Start':'End'}`).textContent=`${y}년 ${mn[m]}`;
-  const grid=document.getElementById(`dpGrid${which==='start'?'Start':'End'}`);
-  grid.innerHTML='';
-  const fixedH=getFixedHolidays(y);
-  const userH=new Set(holidays.map(h=>h.date));
-  const allH=new Set([...fixedH,...userH]);
-  ['일','월','화','수','목','금','토'].forEach(d=>{
-    const el=document.createElement('div');el.className='dp-dlabel';el.textContent=d;grid.appendChild(el);
-  });
-  const first=new Date(y,m,1).getDay();
-  const last=new Date(y,m+1,0).getDate();
+  const pid=`picker${which.charAt(0).toUpperCase()+which.slice(1)}`;
+  document.getElementById(`dpTitle${which.charAt(0).toUpperCase()+which.slice(1)}`).textContent=`${y}년 ${mn[m]}`;
+  const grid=document.getElementById(`dpGrid${which.charAt(0).toUpperCase()+which.slice(1)}`);
+  if(!grid)return;grid.innerHTML='';
+  const fixedH=getFixedHolidays(y);const userH=new Set(holidays.map(h=>h.date));const allH=new Set([...fixedH,...userH]);
+  ['일','월','화','수','목','금','토'].forEach(d=>{const el=document.createElement('div');el.className='dp-dlabel';el.textContent=d;grid.appendChild(el);});
+  const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();
   const todayStr=dStr(today.getFullYear(),today.getMonth(),today.getDate());
   const selStr=getDateVal(which);
   for(let i=0;i<first;i++){const el=document.createElement('div');el.className='dp-cell empty';grid.appendChild(el);}
   for(let d=1;d<=last;d++){
-    const ds=dStr(y,m,d);
-    const dow=(first+d-1)%7;
-    const isH=allH.has(ds);
+    const ds=dStr(y,m,d),dow=(first+d-1)%7,isH=allH.has(ds);
     let cls='dp-cell';
-    if(dow===0||isH)cls+=' dp-sun';
-    else if(dow===6)cls+=' dp-sat';
-    if(isH)cls+=' dp-hol';
-    if(ds===todayStr)cls+=' dp-today';
-    if(ds===selStr)cls+=' dp-selected';
-    const el=document.createElement('div');
-    el.className=cls;el.textContent=d;
-    el.addEventListener('click',()=>{
-      setDateVal(which,ds);
-      closePicker(which);
-    });
+    if(dow===0||isH)cls+=' dp-sun';else if(dow===6)cls+=' dp-sat';
+    if(isH)cls+=' dp-hol';if(ds===todayStr)cls+=' dp-today';if(ds===selStr)cls+=' dp-selected';
+    const el=document.createElement('div');el.className=cls;el.textContent=d;
+    el.addEventListener('click',()=>{setDateVal(which,ds);closePicker(which);});
     grid.appendChild(el);
   }
 }
 
-/* ── JSONBin ── */
-let promos=[],seasons=[],holidays=[],productCount=0,isSaving=false,editIdx=-1;
+/* ── 데이터 ── */
+let promos=[],seasons=[],holidays=[],productCount=0,pcProductCount=0,isSaving=false,editIdx=-1,pcEditIdx=-1;
 const today=new Date();
 
 async function loadData(){
@@ -474,203 +634,187 @@ async function loadData(){
     const json=await res.json();
     promos=json.record?.promos||[];
     const raw=json.record?.seasons;
-    if(Array.isArray(raw)){seasons=raw;}
+    if(Array.isArray(raw))seasons=raw;
     else if(raw&&typeof raw==='object'){
       seasons=[];
       if(raw.lowStart&&raw.lowEnd)seasons.push({type:'low',start:raw.lowStart,end:raw.lowEnd});
       if(raw.highStart&&raw.highEnd)seasons.push({type:'high',start:raw.highStart,end:raw.highEnd});
       if(raw.goldStart&&raw.goldEnd)seasons.push({type:'gold',start:raw.goldStart,end:raw.goldEnd});
-    }else{seasons=[];}
+    }else seasons=[];
     holidays=json.record?.holidays||[];
     renderSeasonDisplay();renderSeasonList();renderHolidayList();
+    initSearchYearFilter();
   }catch(e){showToast('데이터 불러오기 실패');promos=[];}
 }
 async function saveAll(){
   if(isSaving)return;isSaving=true;
-  try{
-    await fetch(BASE,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},body:JSON.stringify({promos,seasons,holidays})});
-  }catch(e){showToast('저장 실패. 잠시 후 다시 시도해 주세요.');}
+  try{await fetch(BASE,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},body:JSON.stringify({promos,seasons,holidays})});}
+  catch(e){showToast('저장 실패.');}
   isSaving=false;
 }
 
-/* ── 고정 공휴일 ── */
+/* ── 공휴일 ── */
 function getFixedHolidays(year){
-  const h=new Set();
-  const add=(m,d)=>h.add(`${year}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
+  const h=new Set();const add=(m,d)=>h.add(`${year}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
   add(1,1);add(3,1);add(5,5);add(6,6);add(8,15);add(10,3);add(10,9);add(12,25);
-  const lunar=lunarToSolar(year);
-  lunar.seollal.forEach(d=>h.add(d));lunar.chuseok.forEach(d=>h.add(d));lunar.buddha.forEach(d=>h.add(d));
-  return h;
+  const l=lunarToSolar(year);l.seollal.forEach(d=>h.add(d));l.chuseok.forEach(d=>h.add(d));l.buddha.forEach(d=>h.add(d));return h;
 }
 function lunarToSolar(year){
-  const table={
-    2024:{seollal:['2024-02-09','2024-02-10','2024-02-11','2024-02-12'],chuseok:['2024-09-16','2024-09-17','2024-09-18'],buddha:['2024-05-15']},
-    2025:{seollal:['2025-01-28','2025-01-29','2025-01-30'],chuseok:['2025-10-05','2025-10-06','2025-10-07','2025-10-08'],buddha:['2025-05-05']},
-    2026:{seollal:['2026-02-17','2026-02-18','2026-02-19'],chuseok:['2026-09-24','2026-09-25','2026-09-26'],buddha:['2026-05-24']},
-    2027:{seollal:['2027-02-06','2027-02-07','2027-02-08'],chuseok:['2027-09-14','2027-09-15','2027-09-16'],buddha:['2027-05-13']},
-  };
-  return table[year]||{seollal:[],chuseok:[],buddha:[]};
+  const t={2024:{seollal:['2024-02-09','2024-02-10','2024-02-11','2024-02-12'],chuseok:['2024-09-16','2024-09-17','2024-09-18'],buddha:['2024-05-15']},2025:{seollal:['2025-01-28','2025-01-29','2025-01-30'],chuseok:['2025-10-05','2025-10-06','2025-10-07','2025-10-08'],buddha:['2025-05-05']},2026:{seollal:['2026-02-17','2026-02-18','2026-02-19'],chuseok:['2026-09-24','2026-09-25','2026-09-26'],buddha:['2026-05-24']},2027:{seollal:['2027-02-06','2027-02-07','2027-02-08'],chuseok:['2027-09-14','2027-09-15','2027-09-16'],buddha:['2027-05-13']}};
+  return t[year]||{seollal:[],chuseok:[],buddha:[]};
+}
+async function addHoliday(){const date=document.getElementById('hDate').value,name=document.getElementById('hName').value.trim();if(!date||!name){showToast('날짜와 공휴일명을 입력해 주세요.');return;}if(holidays.find(h=>h.date===date&&h.name===name)){showToast('이미 등록된 공휴일입니다.');return;}holidays.push({date,name});holidays.sort((a,b)=>a.date.localeCompare(b.date));await saveAll();document.getElementById('hDate').value='';document.getElementById('hName').value='';renderHolidayList();renderCal();renderPcCal();}
+async function addHolidayPC(){const date=document.getElementById('pcHDate').value,name=document.getElementById('pcHName').value.trim();if(!date||!name){showToast('날짜와 공휴일명을 입력해 주세요.');return;}if(holidays.find(h=>h.date===date&&h.name===name)){showToast('이미 등록된 공휴일입니다.');return;}holidays.push({date,name});holidays.sort((a,b)=>a.date.localeCompare(b.date));await saveAll();document.getElementById('pcHDate').value='';document.getElementById('pcHName').value='';renderHolidayList();renderCal();renderPcCal();}
+async function deleteHoliday(idx){holidays.splice(idx,1);await saveAll();renderHolidayList();renderCal();renderPcCal();showToast('🗑 삭제됐습니다.');}
+function renderHolidayList(){
+  const ids=['holidayList','pcHolidayList'];ids.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    if(!holidays.length){el.innerHTML='<div style="font-size:13px;color:#C8BCA8;text-align:center;padding:10px 0;">등록된 공휴일이 없습니다.</div>';return;}
+    el.innerHTML=holidays.map((h,i)=>`<div class="holiday-item"><div><span class="holiday-item-date">${h.date}</span><span class="holiday-item-text">${h.name}</span></div><button class="holiday-del-btn" onclick="deleteHoliday(${i})">🗑️</button></div>`).join('');
+  });
 }
 
 /* ── 시즌 ── */
 function fmtDate(d){if(!d)return'';const p=d.split('-');return p.length===3?`${parseInt(p[1])}/${parseInt(p[2])}`:d;}
-async function addSeason(){
-  const type=document.getElementById('sType').value;
-  const start=document.getElementById('sStart').value;
-  const end=document.getElementById('sEnd').value;
-  if(!start||!end){showToast('시작일과 종료일을 모두 입력해 주세요.');return;}
-  if(start>end){showToast('종료일이 시작일보다 빠릅니다.');return;}
-  seasons.push({type,start,end});
-  seasons.sort((a,b)=>a.start.localeCompare(b.start));
-  await saveAll();
-  document.getElementById('sStart').value='';document.getElementById('sEnd').value='';
-  renderSeasonDisplay();renderSeasonList();
-  showToast('✅ 시즌 기간이 추가됐습니다!');
-}
-async function deleteSeason(idx){
-  seasons.splice(idx,1);await saveAll();
-  renderSeasonDisplay();renderSeasonList();showToast('🗑 삭제됐습니다.');
-}
+async function addSeason(){const type=document.getElementById('sType').value,start=document.getElementById('sStart').value,end=document.getElementById('sEnd').value;if(!start||!end){showToast('시작일과 종료일을 입력해 주세요.');return;}if(start>end){showToast('종료일이 시작일보다 빠릅니다.');return;}seasons.push({type,start,end});seasons.sort((a,b)=>a.start.localeCompare(b.start));await saveAll();document.getElementById('sStart').value='';document.getElementById('sEnd').value='';renderSeasonDisplay();renderSeasonList();}
+async function addSeasonPC(){const type=document.getElementById('pcSType').value,start=document.getElementById('pcSStart').value,end=document.getElementById('pcSEnd').value;if(!start||!end){showToast('시작일과 종료일을 입력해 주세요.');return;}if(start>end){showToast('종료일이 시작일보다 빠릅니다.');return;}seasons.push({type,start,end});seasons.sort((a,b)=>a.start.localeCompare(b.start));await saveAll();document.getElementById('pcSStart').value='';document.getElementById('pcSEnd').value='';renderSeasonDisplay();renderSeasonList();showToast('✅ 시즌이 추가됐습니다!');}
+async function deleteSeason(idx){seasons.splice(idx,1);await saveAll();renderSeasonDisplay();renderSeasonList();showToast('🗑 삭제됐습니다.');}
 function renderSeasonDisplay(){
-  const el=document.getElementById('seasonDisplay');
   const sorted=[...seasons].sort((a,b)=>a.start.localeCompare(b.start));
-  if(!sorted.length){el.innerHTML='';el.style.display='none';el.style.marginBottom='0';return;}
-  el.innerHTML=sorted.map(s=>`
-    <div class="season-display-row">
-      <span class="season-badge ${s.type}">${SEASON_LABEL[s.type]}</span>
-      <span class="season-display-text">${fmtDate(s.start)} ~ ${fmtDate(s.end)}</span>
-    </div>`).join('');
-  el.style.display='flex';el.style.marginBottom='12px';
+  const html=sorted.map(s=>`<div class="season-display-row"><span class="season-badge ${s.type}">${SEASON_LABEL[s.type]}</span><span class="season-display-text">${fmtDate(s.start)} ~ ${fmtDate(s.end)}</span></div>`).join('');
+  ['seasonDisplay'].forEach(id=>{const el=document.getElementById(id);if(el){el.innerHTML=html;el.style.display=sorted.length?'flex':'none';el.style.marginBottom=sorted.length?'12px':'0';}});
+  const pcEl=document.getElementById('pcSeasonDisplay');
+  if(pcEl)pcEl.innerHTML=sorted.map(s=>`<div class="pc-season-row"><span class="season-badge ${s.type}" style="font-size:9px;">${SEASON_LABEL[s.type]}</span><span class="season-display-text">${fmtDate(s.start)} ~ ${fmtDate(s.end)}</span></div>`).join('');
 }
 function renderSeasonList(){
-  const el=document.getElementById('seasonList');
-  if(!seasons.length){el.innerHTML='<div style="font-size:13px;color:#C8BCA8;text-align:center;padding:10px 0;">등록된 시즌 기간이 없습니다.</div>';return;}
-  el.innerHTML=seasons.map((s,i)=>`
-    <div class="season-item">
-      <div class="season-item-left">
-        <span class="season-item-badge ${s.type}">${SEASON_LABEL[s.type]}</span>
-        <span class="season-item-text">${s.start} ~ ${s.end}</span>
-      </div>
-      <button class="season-item-del" onclick="deleteSeason(${i})">🗑️</button>
-    </div>`).join('');
+  const html=seasons.length?seasons.map((s,i)=>`<div class="season-item"><div class="season-item-left"><span class="season-item-badge ${s.type}">${SEASON_LABEL[s.type]}</span><span class="season-item-text">${s.start} ~ ${s.end}</span></div><button class="season-item-del" onclick="deleteSeason(${i})">🗑️</button></div>`).join(''):'<div style="font-size:13px;color:#C8BCA8;text-align:center;padding:10px 0;">등록된 시즌 기간이 없습니다.</div>';
+  ['seasonList','pcSeasonList'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
 }
 
-/* ── 공휴일 ── */
-async function addHoliday(){
-  const date=document.getElementById('hDate').value;
-  const name=document.getElementById('hName').value.trim();
-  if(!date||!name){showToast('날짜와 공휴일명을 모두 입력해 주세요.');return;}
-  if(holidays.find(h=>h.date===date&&h.name===name)){showToast('이미 등록된 공휴일입니다.');return;}
-  holidays.push({date,name});holidays.sort((a,b)=>a.date.localeCompare(b.date));
-  await saveAll();
-  document.getElementById('hDate').value='';document.getElementById('hName').value='';
-  renderHolidayList();renderCal();showToast('✅ 공휴일이 추가됐습니다!');
+/* ── 셀렉터 초기화 ── */
+function initSelectors(){
+  const years=[];for(let y=today.getFullYear()-1;y<=today.getFullYear()+2;y++)years.push(y);
+  const months=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  [['selYear','selMonth'],['pcSelYear','pcSelMonth']].forEach(([yId,mId])=>{
+    const sy=document.getElementById(yId),sm=document.getElementById(mId);if(!sy||!sm)return;
+    years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y+'년';if(y===today.getFullYear())o.selected=true;sy.appendChild(o);});
+    months.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.textContent=m;if(i===today.getMonth())o.selected=true;sm.appendChild(o);});
+    sy.addEventListener('change',()=>{syncYearMonth();renderCal();renderPcCal();});
+    sm.addEventListener('change',()=>{syncYearMonth();renderCal();renderPcCal();});
+  });
+  // 목록 셀렉터
+  [['listYear','listMonth'],['pcListYear','pcListMonth']].forEach(([yId,mId])=>{
+    const sy=document.getElementById(yId),sm=document.getElementById(mId);if(!sy||!sm)return;
+    years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y+'년';if(y===today.getFullYear())o.selected=true;sy.appendChild(o);});
+    months.forEach((m,i)=>{const o=document.createElement('option');o.value=i+1;o.textContent=m;if(i===today.getMonth())o.selected=true;sm.appendChild(o);});
+    sy.addEventListener('change',renderList);sm.addEventListener('change',renderList);
+  });
 }
-async function deleteHoliday(idx){
-  holidays.splice(idx,1);await saveAll();renderHolidayList();renderCal();showToast('🗑 삭제됐습니다.');
+function syncYearMonth(){
+  const y=document.getElementById(isPC()?'pcSelYear':'selYear')?.value;
+  const m=document.getElementById(isPC()?'pcSelMonth':'selMonth')?.value;
+  if(y){['selYear','pcSelYear'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=y;});}
+  if(m!==undefined){['selMonth','pcSelMonth'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=m;});}
 }
-function renderHolidayList(){
-  const el=document.getElementById('holidayList');
-  if(!holidays.length){el.innerHTML='<div style="font-size:13px;color:#C8BCA8;text-align:center;padding:10px 0;">등록된 공휴일이 없습니다.</div>';return;}
-  el.innerHTML=holidays.map((h,i)=>`
-    <div class="holiday-item">
-      <div><span class="holiday-item-date">${h.date}</span><span class="holiday-item-text">${h.name}</span></div>
-      <button class="holiday-del-btn" onclick="deleteHoliday(${i})">🗑️</button>
-    </div>`).join('');
-}
-
-/* ── 년/월 셀렉터 ── */
-const selYear=document.getElementById('selYear');
-const selMonth=document.getElementById('selMonth');
-for(let y=today.getFullYear()-1;y<=today.getFullYear()+2;y++){
-  const o=document.createElement('option');o.value=y;o.textContent=y+'년';
-  if(y===today.getFullYear())o.selected=true;
-  selYear.appendChild(o);
-}
-['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'].forEach((m,i)=>{
-  const o=document.createElement('option');o.value=i;o.textContent=m;
-  if(i===today.getMonth())o.selected=true;
-  selMonth.appendChild(o);
-});
-selYear.addEventListener('change',renderCal);
-selMonth.addEventListener('change',renderCal);
-
-/* 목록 년도 셀렉터 초기화 */
-const listYear=document.getElementById('listYear');
-const listMonth=document.getElementById('listMonth');
-for(let y=today.getFullYear()-1;y<=today.getFullYear()+2;y++){
-  const o=document.createElement('option');o.value=y;o.textContent=y+'년';
-  if(y===today.getFullYear())o.selected=true;
-  listYear.appendChild(o);
-}
-['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'].forEach((m,i)=>{
-  const o=document.createElement('option');o.value=i+1;o.textContent=m;
-  if(i===today.getMonth())o.selected=true;
-  listMonth.appendChild(o);
-});
+function getCalYear(){return +(document.getElementById('selYear')?.value||today.getFullYear());}
+function getCalMonth(){return +(document.getElementById('selMonth')?.value??today.getMonth());}
 
 function changeMonth(dir){
-  let y=+selYear.value,m=+selMonth.value;
-  m+=dir;if(m<0){m=11;y--;}if(m>11){m=0;y++;}
-  const years=[...selYear.options].map(o=>+o.value);
-  if(y<years[0]||y>years[years.length-1])return;
-  selYear.value=y;selMonth.value=m;renderCal();
+  let y=getCalYear(),m=getCalMonth();m+=dir;if(m<0){m=11;y--;}if(m>11){m=0;y++;}
+  ['selYear','pcSelYear'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=y;});
+  ['selMonth','pcSelMonth'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=m;});
+  renderCal();renderPcCal();
 }
 
-/* 스와이프 */
-let swipeX=0,swipeY=0;
-const calWrap=document.getElementById('calWrap');
-calWrap.addEventListener('touchstart',e=>{swipeX=e.touches[0].clientX;swipeY=e.touches[0].clientY;},{passive:true});
-calWrap.addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-swipeX,dy=e.changedTouches[0].clientY-swipeY;
-  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40)changeMonth(dx<0?1:-1);
-},{passive:true});
-
+/* ── 모바일 탭 ── */
 function switchTab(t){
-  ['cal','form','list','setting'].forEach((name,i)=>{
-    document.querySelectorAll('.tab-bar button')[i].classList.toggle('active',name===t);
+  ['cal','form','list','search','setting'].forEach((name,i)=>{
+    document.querySelectorAll('.tab-bar button')[i]?.classList.toggle('active',name===t);
   });
-  document.getElementById('tabCal').style.display    =t==='cal'    ?'':'none';
-  document.getElementById('tabForm').style.display   =t==='form'   ?'':'none';
-  document.getElementById('tabList').style.display   =t==='list'   ?'':'none';
+  document.getElementById('tabCal').style.display=t==='cal'?'':'none';
+  document.getElementById('tabForm').style.display=t==='form'?'':'none';
+  document.getElementById('tabList').style.display=t==='list'?'':'none';
+  document.getElementById('tabSearch').style.display=t==='search'?'':'none';
   document.getElementById('tabSetting').style.display=t==='setting'?'':'none';
   if(t==='list'){renderList();}
   if(t==='cal'){renderCal();}
+  if(t==='search'){renderSearch();}
   if(t==='setting'){renderSeasonList();renderHolidayList();}
 }
 
+/* ── PC 탭 ── */
+let pcCurrentTab='cal';
+function pcSwitchTab(t){
+  pcCurrentTab=t;
+  document.querySelectorAll('.pc-tab-bar button').forEach((b,i)=>{b.classList.toggle('active',['cal','form','list','search','setting'][i]===t);});
+  ['cal','form','list','search','setting'].forEach(name=>{
+    const el=document.getElementById(`pcTab${name.charAt(0).toUpperCase()+name.slice(1)}`);
+    if(el)el.style.display=name===t?'':'none';
+  });
+  if(t==='cal'){document.getElementById('pcDetailEmpty').style.display='flex';document.getElementById('pcDetailContent').style.display='none';}
+  if(t==='list')renderList();
+  if(t==='search')renderSearch();
+  if(t==='setting'){renderSeasonList();renderHolidayList();}
+}
+
+/* ── 달력 공통 ── */
 function dStr(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
 function getPromosForDate(ds){return promos.filter(p=>ds>=p.start&&ds<=p.end);}
 
+let selectedDateStr='';
+
 function renderCal(){
-  const y=+selYear.value,m=+selMonth.value;
-  const grid=document.getElementById('calGrid');grid.innerHTML='';
-  const fixedH=getFixedHolidays(y);
-  const userH=new Set(holidays.map(h=>h.date));
-  const allH=new Set([...fixedH,...userH]);
-  ['일','월','화','수','목','금','토'].forEach(d=>{
-    const el=document.createElement('div');el.className='day-label';el.textContent=d;grid.appendChild(el);
-  });
+  const y=getCalYear(),m=getCalMonth();
+  const grid=document.getElementById('calGrid');if(!grid)return;grid.innerHTML='';
+  const fixedH=getFixedHolidays(y),userH=new Set(holidays.map(h=>h.date)),allH=new Set([...fixedH,...userH]);
+  ['일','월','화','수','목','금','토'].forEach(d=>{const el=document.createElement('div');el.className='day-label';el.textContent=d;grid.appendChild(el);});
   const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();
   const todayStr=dStr(today.getFullYear(),today.getMonth(),today.getDate());
   for(let i=0;i<first;i++){const el=document.createElement('div');el.className='cell empty';grid.appendChild(el);}
   for(let d=1;d<=last;d++){
     const ds=dStr(y,m,d),dow=(first+d-1)%7,isH=allH.has(ds);
-    let cls='cell';
-    if(dow===0||isH)cls+=' sun';else if(dow===6)cls+=' sat';
-    if(isH)cls+=' hol';if(ds===todayStr)cls+=' today';
-    const cell=document.createElement('div');cell.className=cls;
-    cell.innerHTML=`<div class="dn">${d}</div>`;
-    getPromosForDate(ds).forEach(p=>{
-      const pill=document.createElement('div');pill.className='promo-pill';
-      const c=getColor(p);pill.style.background=hexToRgba(c,0.13);pill.style.color=c;pill.textContent=p.type;
-      cell.appendChild(pill);
-    });
+    let cls='cell';if(dow===0||isH)cls+=' sun';else if(dow===6)cls+=' sat';if(isH)cls+=' hol';if(ds===todayStr)cls+=' today';if(ds===selectedDateStr)cls+=' selected-date';
+    const cell=document.createElement('div');cell.className=cls;cell.innerHTML=`<div class="dn">${d}</div>`;
+    getPromosForDate(ds).forEach(p=>{const pill=document.createElement('div');pill.className='promo-pill';const c=getColor(p);pill.style.background=hexToRgba(c,0.13);pill.style.color=c;pill.textContent=p.type;cell.appendChild(pill);});
     cell.addEventListener('click',()=>openDayModal(ds,d,m,y));
     grid.appendChild(cell);
   }
 }
 
+function renderPcCal(){
+  const y=getCalYear(),m=getCalMonth();
+  const grid=document.getElementById('pcCalGrid');if(!grid)return;grid.innerHTML='';
+  const fixedH=getFixedHolidays(y),userH=new Set(holidays.map(h=>h.date)),allH=new Set([...fixedH,...userH]);
+  ['일','월','화','수','목','금','토'].forEach(d=>{const el=document.createElement('div');el.className='pc-day-label';el.textContent=d;grid.appendChild(el);});
+  const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();
+  const todayStr=dStr(today.getFullYear(),today.getMonth(),today.getDate());
+  for(let i=0;i<first;i++){const el=document.createElement('div');el.className='pc-cell pc-empty';grid.appendChild(el);}
+  for(let d=1;d<=last;d++){
+    const ds=dStr(y,m,d),dow=(first+d-1)%7,isH=allH.has(ds);
+    let cls='pc-cell';if(dow===0||isH)cls+=' pc-sun';else if(dow===6)cls+=' pc-sat';if(isH)cls+=' pc-hol';if(ds===todayStr)cls+=' pc-today';if(ds===selectedDateStr)cls+=' pc-selected';
+    const cell=document.createElement('div');cell.className=cls;cell.innerHTML=`<div class="pc-dn">${d}</div>`;
+    getPromosForDate(ds).forEach(p=>{const pill=document.createElement('div');pill.className='pc-promo-pill';const c=getColor(p);pill.style.background=hexToRgba(c,0.13);pill.style.color=c;pill.textContent=p.type;cell.appendChild(pill);});
+    cell.addEventListener('click',()=>{selectedDateStr=ds;renderPcCal();showPcDetail(ds,d,m,y);if(pcCurrentTab!=='cal')pcSwitchTab('cal');});
+    grid.appendChild(cell);
+  }
+}
+
+/* ── PC 오른쪽 날짜 상세 ── */
+function showPcDetail(ds,d,m,y){
+  const ps=getPromosForDate(ds);
+  const mn=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const holName=holidays.find(h=>h.date===ds)?.name||'';
+  let html=`<div style="padding:4px 0 12px;"><span style="font-size:16px;font-weight:800;color:#5C5040;">${y}년 ${mn[m]} ${d}일</span>`;
+  if(holName)html+=` <span style="font-size:12px;color:#dc4038;font-weight:800;">🔴 ${holName}</span>`;
+  html+=`</div>`;
+  if(ps.length===0){html+=`<div class="empty-state">등록된 프로모션이 없습니다.</div>`;}
+  else{ps.forEach(p=>{const c=getColor(p),idx=promos.indexOf(p);html+=`<div class="promo-card" style="border-color:${hexToRgba(c,0.4)};"><div class="pname" style="justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}</div><div style="display:flex;gap:5px;"><button onclick="pcStartEdit(${idx})" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button><button onclick="pcStartCopy(${idx})" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button></div></div><div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;if(p.products&&p.products.length>0){p.products.forEach(pr=>{const sl=pr.season?pr.season.replace('시즌','')+'   ':'';html+=`<div class="product-row"><span class="ptype">${sl}${pr.name}</span><span style="font-weight:800;color:#5C5040;">${Number(pr.price).toLocaleString()}원</span></div>`;});}else{html+=`<div style="font-size:12px;color:#C8BCA8;">판매 상품 없음</div>`;}html+=`</div>`;});}
+  document.getElementById('pcDetailEmpty').style.display='none';
+  document.getElementById('pcDetailContent').style.display='';
+  document.getElementById('pcDetailContent').innerHTML=html;
+}
+
+/* ── 모바일 모달 ── */
 function openDayModal(ds,d,m,y){
   const ps=getPromosForDate(ds);
   const mn=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
@@ -679,219 +823,192 @@ function openDayModal(ds,d,m,y){
   if(holName)html+=`<div style="font-size:12px;color:#dc4038;font-weight:800;margin-bottom:12px;">🔴 ${holName}</div>`;
   else html+=`<div style="margin-bottom:12px;"></div>`;
   if(ps.length===0){html+=`<div class="empty-state">등록된 프로모션이 없습니다.</div>`;}
-  else{
-    ps.forEach(p=>{
-      const c=getColor(p);
-      const idx=promos.indexOf(p);
-      html+=`<div class="promo-card" style="border-color:${hexToRgba(c,0.4)};">`;
-      html+=`<div class="pname" style="justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}
-        </div>
-        <div style="display:flex;gap:5px;">
-          <button onclick="document.getElementById('dayModal').style.display='none';startEdit(${idx});"
-            style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button>
-          <button onclick="document.getElementById('dayModal').style.display='none';startCopy(${idx});"
-            style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button>
-        </div>
-      </div>`;
-      html+=`<div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;
-      if(p.products&&p.products.length>0){
-        p.products.forEach(pr=>{
-          const sl=pr.season?pr.season.replace('시즌','')+'   ':'';
-          html+=`<div class="product-row"><span class="ptype">${sl}${pr.name}</span><span style="font-weight:800;color:#5C5040;">${Number(pr.price).toLocaleString()}원</span></div>`;
-        });
-      }else{html+=`<div style="font-size:12px;color:#C8BCA8;">판매 상품 없음</div>`;}
-      html+=`</div>`;
-    });
-  }
+  else{ps.forEach(p=>{const c=getColor(p),idx=promos.indexOf(p);html+=`<div class="promo-card" style="border-color:${hexToRgba(c,0.4)};"><div class="pname" style="justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}</div><div style="display:flex;gap:5px;"><button onclick="document.getElementById('dayModal').style.display='none';startEdit(${idx});" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button><button onclick="document.getElementById('dayModal').style.display='none';startCopy(${idx});" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button></div></div><div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;if(p.products&&p.products.length>0){p.products.forEach(pr=>{const sl=pr.season?pr.season.replace('시즌','')+'   ':'';html+=`<div class="product-row"><span class="ptype">${sl}${pr.name}</span><span style="font-weight:800;color:#5C5040;">${Number(pr.price).toLocaleString()}원</span></div>`;});}else{html+=`<div style="font-size:12px;color:#C8BCA8;">판매 상품 없음</div>`;}html+=`</div>`;});}
   document.getElementById('modalContent').innerHTML=html;
   document.getElementById('dayModal').style.display='flex';
 }
 function closeBgModal(e){if(e.target.id==='dayModal')document.getElementById('dayModal').style.display='none';}
 
+/* ── 상품 (모바일) ── */
 let productEntries=[];
 function addProduct(preset){
   const id=productCount++;productEntries.push(id);
   const div=document.createElement('div');div.className='product-entry';div.id='pe_'+id;
-  div.innerHTML=`
-    <button class="del-btn" onclick="removeProduct(${id})">×</button>
-    <div class="form-group" style="margin-bottom:8px;padding-right:30px;">
-      <label>상품명</label>
-      <select id="pname_${id}">${PRODUCT_TYPES.map(t=>`<option>${t}</option>`).join('')}</select>
-    </div>
-    <div class="form-group" style="margin-bottom:8px;">
-      <label>시즌</label>
-      <select id="pseason_${id}">${SEASON_TYPES.map(t=>`<option>${t}</option>`).join('')}</select>
-    </div>
-    <div class="form-group" style="margin-bottom:0;">
-      <label>가격 (원)</label>
-      <input type="number" id="pprice_${id}" placeholder="0" inputmode="numeric">
-    </div>`;
+  div.innerHTML=`<button class="del-btn" onclick="removeProduct(${id})">×</button><div class="form-group" style="margin-bottom:8px;padding-right:30px;"><label>상품명</label><select id="pname_${id}">${PRODUCT_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:8px;"><label>시즌</label><select id="pseason_${id}">${SEASON_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:0;"><label>가격 (원)</label><input type="number" id="pprice_${id}" placeholder="0" inputmode="numeric"></div>`;
   document.getElementById('productList').appendChild(div);
-  if(preset){
-    document.getElementById('pname_'+id).value=preset.name||PRODUCT_TYPES[0];
-    document.getElementById('pseason_'+id).value=preset.season||SEASON_TYPES[0];
-    document.getElementById('pprice_'+id).value=preset.price||'';
-  }
+  if(preset){document.getElementById('pname_'+id).value=preset.name||PRODUCT_TYPES[0];document.getElementById('pseason_'+id).value=preset.season||SEASON_TYPES[0];document.getElementById('pprice_'+id).value=preset.price||'';}
 }
-function removeProduct(id){
-  document.getElementById('pe_'+id)?.remove();
-  productEntries=productEntries.filter(x=>x!==id);
-}
+function removeProduct(id){document.getElementById('pe_'+id)?.remove();productEntries=productEntries.filter(x=>x!==id);}
 
 function startEdit(idx){
   const p=promos[idx];editIdx=idx;
   setDateVal('start',p.start);setDateVal('end',p.end);
   document.getElementById('fType').value=p.type;
-  document.getElementById('productList').innerHTML='';
-  productEntries=[];productCount=0;
-  if(p.products&&p.products.length>0)p.products.forEach(pr=>addProduct(pr));
-  selectedColor=p.color||'';renderSwatches();
-  document.getElementById('editBanner').style.display='';
-  document.getElementById('submitBtn').textContent='수정 저장';
-  document.getElementById('cancelBtn').style.display='';
+  document.getElementById('productList').innerHTML='';productEntries=[];productCount=0;
+  if(p.products?.length)p.products.forEach(pr=>addProduct(pr));
+  selectedColor=p.color||'';renderSwatches('mob');
+  document.getElementById('editBanner').style.display='';document.getElementById('editBanner').textContent='✏️ 수정 모드 — 내용 변경 후 저장하세요';
+  document.getElementById('submitBtn').textContent='수정 저장';document.getElementById('cancelBtn').style.display='';
   switchTab('form');
 }
 function cancelEdit(){
-  editIdx=-1;selectedColor='';
-  clearDateVal('start');clearDateVal('end');
-  document.getElementById('fType').value='';
-  document.getElementById('productList').innerHTML='';
-  productEntries=[];productCount=0;
-  renderSwatches();
-  document.getElementById('editBanner').style.display='none';
-  document.getElementById('submitBtn').textContent='프로모션 등록';
-  document.getElementById('cancelBtn').style.display='none';
+  editIdx=-1;selectedColor='';clearDateVal('start');clearDateVal('end');
+  document.getElementById('fType').value='';document.getElementById('productList').innerHTML='';productEntries=[];productCount=0;renderSwatches('mob');
+  document.getElementById('editBanner').style.display='none';document.getElementById('submitBtn').textContent='프로모션 등록';document.getElementById('cancelBtn').style.display='none';
   switchTab('list');
 }
-
 async function submitPromo(){
-  const start=getDateVal('start');
-  const end=getDateVal('end');
-  const type=document.getElementById('fType').value.trim();
+  const start=getDateVal('start'),end=getDateVal('end'),type=document.getElementById('fType').value.trim();
   if(!start||!end||!type){showToast('시작일, 종료일, 프로모션 구분을 입력해 주세요.');return;}
   if(start>end){showToast('종료일이 시작일보다 빠릅니다.');return;}
-  const products=productEntries.map(id=>{
-    const name=document.getElementById('pname_'+id)?.value;
-    const season=document.getElementById('pseason_'+id)?.value;
-    const price=document.getElementById('pprice_'+id)?.value;
-    return name&&price?{name,season,price}:null;
-  }).filter(Boolean);
-  const btn=document.getElementById('submitBtn');
-  btn.disabled=true;btn.textContent='저장 중...';
+  const products=productEntries.map(id=>{const name=document.getElementById('pname_'+id)?.value,season=document.getElementById('pseason_'+id)?.value,price=document.getElementById('pprice_'+id)?.value;return name&&price?{name,season,price}:null;}).filter(Boolean);
+  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='저장 중...';
   const promoData={start,end,type,products};
   if(selectedColor&&selectedColor!==getAutoColor(type))promoData.color=selectedColor;
-  if(editIdx>=0){promos[editIdx]=promoData;}else{promos.push(promoData);}
-  await saveAll();
-  showToast(editIdx>=0?'✅ 수정됐습니다!':'✅ 등록됐습니다!');
-  editIdx=-1;selectedColor='';
-  clearDateVal('start');clearDateVal('end');
-  document.getElementById('fType').value='';
-  document.getElementById('productList').innerHTML='';
-  productEntries=[];productCount=0;
-  renderSwatches();
-  document.getElementById('editBanner').style.display='none';
-  btn.disabled=false;btn.textContent='프로모션 등록';
-  document.getElementById('cancelBtn').style.display='none';
-  switchTab('cal');
+  if(editIdx>=0)promos[editIdx]=promoData;else promos.push(promoData);
+  await saveAll();showToast(editIdx>=0?'✅ 수정됐습니다!':'✅ 등록됐습니다!');
+  editIdx=-1;selectedColor='';clearDateVal('start');clearDateVal('end');document.getElementById('fType').value='';document.getElementById('productList').innerHTML='';productEntries=[];productCount=0;renderSwatches('mob');
+  document.getElementById('editBanner').style.display='none';btn.disabled=false;btn.textContent='프로모션 등록';document.getElementById('cancelBtn').style.display='none';
+  renderCal();renderPcCal();renderList();switchTab('cal');
+}
+function startCopy(idx){
+  const p=promos[idx];editIdx=-1;selectedColor=p.color||'';clearDateVal('start');clearDateVal('end');
+  document.getElementById('fType').value=p.type;document.getElementById('productList').innerHTML='';productEntries=[];productCount=0;
+  if(p.products?.length)p.products.forEach(pr=>addProduct(pr));renderSwatches('mob');
+  document.getElementById('editBanner').style.display='';document.getElementById('editBanner').textContent='📋 복사 모드 — 날짜를 입력하고 등록하세요';
+  document.getElementById('submitBtn').textContent='프로모션 등록';document.getElementById('cancelBtn').style.display='';
+  switchTab('form');showToast('📋 내용이 복사됐어요! 날짜를 입력해 주세요.');
 }
 
+/* ── 상품 (PC) ── */
+let pcProductEntries=[];
+function pcAddProduct(preset){
+  const id=pcProductCount++;pcProductEntries.push(id);
+  const div=document.createElement('div');div.className='product-entry';div.id='pcPe_'+id;
+  div.innerHTML=`<button class="del-btn" onclick="pcRemoveProduct(${id})">×</button><div class="form-group" style="margin-bottom:8px;padding-right:30px;"><label>상품명</label><select id="pcPname_${id}">${PRODUCT_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:8px;"><label>시즌</label><select id="pcPseason_${id}">${SEASON_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:0;"><label>가격 (원)</label><input type="number" id="pcPprice_${id}" placeholder="0" inputmode="numeric"></div>`;
+  document.getElementById('pcProductList').appendChild(div);
+  if(preset){document.getElementById('pcPname_'+id).value=preset.name||PRODUCT_TYPES[0];document.getElementById('pcPseason_'+id).value=preset.season||SEASON_TYPES[0];document.getElementById('pcPprice_'+id).value=preset.price||'';}
+}
+function pcRemoveProduct(id){document.getElementById('pcPe_'+id)?.remove();pcProductEntries=pcProductEntries.filter(x=>x!==id);}
+function pcStartEdit(idx){
+  const p=promos[idx];pcEditIdx=idx;
+  setDateVal('pcStart',p.start);setDateVal('pcEnd',p.end);
+  document.getElementById('pcFType').value=p.type;
+  document.getElementById('pcProductList').innerHTML='';pcProductEntries=[];pcProductCount=0;
+  if(p.products?.length)p.products.forEach(pr=>pcAddProduct(pr));
+  pcSelectedColor=p.color||'';renderSwatches('pc');
+  document.getElementById('pcEditBanner').style.display='';document.getElementById('pcEditBanner').textContent='✏️ 수정 모드 — 내용 변경 후 저장하세요';
+  document.getElementById('pcSubmitBtn').textContent='수정 저장';document.getElementById('pcCancelBtn').style.display='';
+  pcSwitchTab('form');
+}
+function pcCancelEdit(){
+  pcEditIdx=-1;pcSelectedColor='';clearDateVal('pcStart');clearDateVal('pcEnd');
+  document.getElementById('pcFType').value='';document.getElementById('pcProductList').innerHTML='';pcProductEntries=[];pcProductCount=0;renderSwatches('pc');
+  document.getElementById('pcEditBanner').style.display='none';document.getElementById('pcSubmitBtn').textContent='프로모션 등록';document.getElementById('pcCancelBtn').style.display='none';
+  pcSwitchTab('list');
+}
+async function pcSubmitPromo(){
+  const start=getDateVal('pcStart'),end=getDateVal('pcEnd'),type=document.getElementById('pcFType').value.trim();
+  if(!start||!end||!type){showToast('시작일, 종료일, 프로모션 구분을 입력해 주세요.');return;}
+  if(start>end){showToast('종료일이 시작일보다 빠릅니다.');return;}
+  const products=pcProductEntries.map(id=>{const name=document.getElementById('pcPname_'+id)?.value,season=document.getElementById('pcPseason_'+id)?.value,price=document.getElementById('pcPprice_'+id)?.value;return name&&price?{name,season,price}:null;}).filter(Boolean);
+  const btn=document.getElementById('pcSubmitBtn');btn.disabled=true;btn.textContent='저장 중...';
+  const promoData={start,end,type,products};
+  if(pcSelectedColor&&pcSelectedColor!==getAutoColor(type))promoData.color=pcSelectedColor;
+  if(pcEditIdx>=0)promos[pcEditIdx]=promoData;else promos.push(promoData);
+  await saveAll();showToast(pcEditIdx>=0?'✅ 수정됐습니다!':'✅ 등록됐습니다!');
+  pcEditIdx=-1;pcSelectedColor='';clearDateVal('pcStart');clearDateVal('pcEnd');document.getElementById('pcFType').value='';document.getElementById('pcProductList').innerHTML='';pcProductEntries=[];pcProductCount=0;renderSwatches('pc');
+  document.getElementById('pcEditBanner').style.display='none';btn.disabled=false;btn.textContent='프로모션 등록';document.getElementById('pcCancelBtn').style.display='none';
+  renderCal();renderPcCal();renderList();pcSwitchTab('cal');
+}
+function pcStartCopy(idx){
+  const p=promos[idx];pcEditIdx=-1;pcSelectedColor=p.color||'';clearDateVal('pcStart');clearDateVal('pcEnd');
+  document.getElementById('pcFType').value=p.type;document.getElementById('pcProductList').innerHTML='';pcProductEntries=[];pcProductCount=0;
+  if(p.products?.length)p.products.forEach(pr=>pcAddProduct(pr));renderSwatches('pc');
+  document.getElementById('pcEditBanner').style.display='';document.getElementById('pcEditBanner').textContent='📋 복사 모드 — 날짜를 입력하고 등록하세요';
+  document.getElementById('pcSubmitBtn').textContent='프로모션 등록';document.getElementById('pcCancelBtn').style.display='';
+  pcSwitchTab('form');showToast('📋 내용이 복사됐어요! 날짜를 입력해 주세요.');
+}
+
+/* ── 목록 ── */
 function renderList(){
-  const container=document.getElementById('listView');
-  const y=+document.getElementById('listYear').value;
-  const mVal=document.getElementById('listMonth').value;
+  const ispc=isPC();
+  const yEl=document.getElementById(ispc?'pcListYear':'listYear');
+  const mEl=document.getElementById(ispc?'pcListMonth':'listMonth');
+  if(!yEl||!mEl)return;
+  // 양쪽 동기화
+  ['listYear','pcListYear'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=yEl.value;});
+  ['listMonth','pcListMonth'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=mEl.value;});
+  const y=+yEl.value,mVal=mEl.value;
   let filtered=[...promos].map((p,i)=>({...p,idx:i}));
-  if(mVal!=='all'){
-    const m=parseInt(mVal);
-    const ym=`${y}-${String(m).padStart(2,'0')}`;
-    filtered=filtered.filter(p=>{
-      // 해당 월과 겹치는 프로모션
-      const mStart=ym+'-01';
-      const mEnd=`${y}-${String(m).padStart(2,'0')}-31`;
-      return p.start<=mEnd&&p.end>=mStart;
-    });
-  }
+  if(mVal!=='all'){const m=parseInt(mVal),mStart=`${y}-${String(m).padStart(2,'0')}-01`,mEnd=`${y}-${String(m).padStart(2,'0')}-31`;filtered=filtered.filter(p=>p.start<=mEnd&&p.end>=mStart);}
   filtered.sort((a,b)=>a.start.localeCompare(b.start));
-  if(!filtered.length){container.innerHTML='<div class="empty-state">해당 기간의 프로모션이 없습니다.</div>';return;}
-  container.innerHTML=filtered.map(p=>{
-    const c=getColor(p);
-    const prodHtml=p.products?.length
-      ?p.products.map(pr=>{
-          const sl=pr.season?pr.season.replace('시즌','')+'   ':'';
-          return `<span class="badge" style="background:${hexToRgba(c,0.12)};color:${c};">${sl}${pr.name} ${Number(pr.price).toLocaleString()}원</span>`;
-        }).join('')
-      :`<span style="font-size:12px;color:#C8BCA8;">상품 없음</span>`;
-    return `<div class="list-item">
-      <div class="color-bar" style="background:${c};"></div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:14px;font-weight:800;margin-bottom:2px;color:#5A5959;">${p.type}</div>
-        <div style="font-size:12px;color:#B0A090;margin-bottom:6px;font-weight:700;">📆 ${p.start} ~ ${p.end}</div>
-        <div>${prodHtml}</div>
-      </div>
-      <div class="list-actions">
-        <button class="list-edit" onclick="startEdit(${p.idx})">✏️</button>
-        <button class="list-edit" onclick="startCopy(${p.idx})">📋</button>
-        <button class="list-del"  onclick="deletePromo(${p.idx})">🗑️</button>
-      </div>
-    </div>`;
-  }).join('');
+  const html=filtered.length?filtered.map(p=>{const c=getColor(p);const prodHtml=p.products?.length?p.products.map(pr=>{const sl=pr.season?pr.season.replace('시즌','')+'   ':'';return `<span class="badge" style="background:${hexToRgba(c,0.12)};color:${c};">${sl}${pr.name} ${Number(pr.price).toLocaleString()}원</span>`;}).join(''):`<span style="font-size:12px;color:#C8BCA8;">상품 없음</span>`;return `<div class="list-item"><div class="color-bar" style="background:${c};"></div><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:800;margin-bottom:2px;color:#5A5959;">${p.type}</div><div style="font-size:12px;color:#B0A090;margin-bottom:6px;font-weight:700;">📆 ${p.start} ~ ${p.end}</div><div>${prodHtml}</div></div><div class="list-actions"><button class="list-edit" onclick="${ispc?'pcStartEdit':'startEdit'}(${p.idx})">✏️</button><button class="list-edit" onclick="${ispc?'pcStartCopy':'startCopy'}(${p.idx})">📋</button><button class="list-del" onclick="deletePromo(${p.idx})">🗑️</button></div></div>`;}).join(''):'<div class="empty-state">해당 기간의 프로모션이 없습니다.</div>';
+  ['listView','pcListView'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
 }
 
 async function deletePromo(idx){
   if(!confirm('이 프로모션을 삭제하시겠습니까?'))return;
-  promos.splice(idx,1);await saveAll();
-  showToast('🗑 삭제됐습니다.');renderList();renderCal();
+  promos.splice(idx,1);await saveAll();showToast('🗑 삭제됐습니다.');renderList();renderCal();renderPcCal();
 }
 
-function startCopy(idx){
-  const p=promos[idx];
-  // 날짜는 비우고 나머지 내용만 복사
-  editIdx=-1;selectedColor=p.color||'';
-  clearDateVal('start');clearDateVal('end');
-  document.getElementById('fType').value=p.type;
-  document.getElementById('productList').innerHTML='';
-  productEntries=[];productCount=0;
-  if(p.products&&p.products.length>0)p.products.forEach(pr=>addProduct(pr));
-  renderSwatches();
-  document.getElementById('editBanner').style.display='';
-  document.getElementById('editBanner').textContent='📋 복사 모드 — 날짜를 입력하고 내용 확인 후 등록하세요';
-  document.getElementById('submitBtn').textContent='프로모션 등록';
-  document.getElementById('cancelBtn').style.display='';
-  switchTab('form');
-  showToast('📋 내용이 복사됐어요! 날짜를 입력해 주세요.');
+/* ── 검색 ── */
+let searchYear='all';
+function initSearchYearFilter(){
+  const years=[...new Set(promos.flatMap(p=>{const ys=[];for(let y=+p.start.slice(0,4);y<=+p.end.slice(0,4);y++)ys.push(y);return ys;}))].sort();
+  const allYears=[today.getFullYear()-1,today.getFullYear(),today.getFullYear()+1,today.getFullYear()+2];
+  const merged=[...new Set([...allYears,...years])].sort();
+  const html=`<button class="search-year-btn${searchYear==='all'?' active':''}" onclick="setSearchYear('all')">전체</button>`+merged.map(y=>`<button class="search-year-btn${searchYear==y?' active':''}" onclick="setSearchYear(${y})">${y}년</button>`).join('');
+  ['searchYearFilter','pcSearchYearFilter'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
+}
+function setSearchYear(y){searchYear=y;initSearchYearFilter();renderSearch();}
+function renderSearch(){
+  const ispc=isPC();
+  const q=(document.getElementById(ispc?'pcSearchInput':'searchInput')?.value||'').trim().toLowerCase();
+  let filtered=[...promos].map((p,i)=>({...p,idx:i}));
+  if(searchYear!=='all')filtered=filtered.filter(p=>+p.start.slice(0,4)<=searchYear&&+p.end.slice(0,4)>=searchYear);
+  if(q)filtered=filtered.filter(p=>p.type.toLowerCase().includes(q)||(p.products||[]).some(pr=>pr.name.toLowerCase().includes(q)));
+  filtered.sort((a,b)=>a.start.localeCompare(b.start));
+  const countHtml=`검색 결과 ${filtered.length}건`;
+  ['searchResultCount','pcSearchResultCount'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=countHtml;});
+  const html=filtered.length?filtered.map(p=>{const c=getColor(p);const prodHtml=p.products?.length?p.products.map(pr=>{const sl=pr.season?pr.season.replace('시즌','')+'   ':'';return `<span class="badge" style="background:${hexToRgba(c,0.12)};color:${c};">${sl}${pr.name} ${Number(pr.price).toLocaleString()}원</span>`;}).join(''):`<span style="font-size:12px;color:#C8BCA8;">상품 없음</span>`;return `<div class="list-item"><div class="color-bar" style="background:${c};"></div><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:800;margin-bottom:2px;color:#5A5959;">${p.type}</div><div style="font-size:12px;color:#B0A090;margin-bottom:6px;font-weight:700;">📆 ${p.start} ~ ${p.end}</div><div>${prodHtml}</div></div><div class="list-actions"><button class="list-edit" onclick="${ispc?'pcStartEdit':'startEdit'}(${p.idx})">✏️</button><button class="list-edit" onclick="${ispc?'pcStartCopy':'startCopy'}(${p.idx})">📋</button><button class="list-del" onclick="deletePromo(${p.idx})">🗑️</button></div></div>`;}).join(''):'<div class="empty-state">검색 결과가 없습니다.</div>';
+  ['searchView','pcSearchView'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
 }
 
-async function init(){
-  document.getElementById('calGrid').innerHTML='<div class="loading" style="grid-column:1/-1;"><div class="spinner"></div>불러오는 중...</div>';
-  await loadData();
-  renderCal();
-  setupDateInputs();
-  renderSwatches();
-  // 목록 탭 스와이프
+/* ── 스와이프 (모바일) ── */
+function initSwipe(){
+  const cw=document.getElementById('calWrap');
+  let sx=0,sy=0;
+  cw?.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  cw?.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40)changeMonth(dx<0?1:-1);},{passive:true});
   const lsw=document.getElementById('listSwipeWrap');
   let lsx=0,lsy=0;
-  lsw.addEventListener('touchstart',e=>{lsx=e.touches[0].clientX;lsy=e.touches[0].clientY;},{passive:true});
-  lsw.addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-lsx,dy=e.changedTouches[0].clientY-lsy;
-    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40)listChangeMonth(dx<0?1:-1);
-  },{passive:true});
+  lsw?.addEventListener('touchstart',e=>{lsx=e.touches[0].clientX;lsy=e.touches[0].clientY;},{passive:true});
+  lsw?.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-lsx,dy=e.changedTouches[0].clientY-lsy;if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40)listChangeMonth(dx<0?1:-1);},{passive:true});
 }
 
 function listChangeMonth(dir){
-  const mSel=document.getElementById('listMonth');
-  if(mSel.value==='all') return;
-  let y=+document.getElementById('listYear').value;
-  let m=parseInt(mSel.value);
-  m+=dir;
-  if(m<1){m=12;y--;}
-  if(m>12){m=1;y++;}
-  const years=[...document.getElementById('listYear').options].map(o=>+o.value);
-  if(y<years[0])y=years[0];
-  if(y>years[years.length-1])y=years[years.length-1];
-  document.getElementById('listYear').value=y;
-  mSel.value=m;
+  const ispc=isPC();
+  const mSel=document.getElementById(ispc?'pcListMonth':'listMonth');
+  if(!mSel||mSel.value==='all')return;
+  let y=+(document.getElementById(ispc?'pcListYear':'listYear')?.value||today.getFullYear());
+  let m=parseInt(mSel.value);m+=dir;if(m<1){m=12;y--;}if(m>12){m=1;y++;}
+  ['listYear','pcListYear'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=y;});
+  ['listMonth','pcListMonth'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=m;});
   renderList();
+}
+
+/* ── 초기화 ── */
+async function init(){
+  document.getElementById('calGrid').innerHTML='<div class="loading" style="grid-column:1/-1;"><div class="spinner"></div>불러오는 중...</div>';
+  document.getElementById('pcCalGrid').innerHTML='<div class="loading" style="grid-column:1/-1;"><div class="spinner"></div>불러오는 중...</div>';
+  initSelectors();
+  await loadData();
+  renderCal();renderPcCal();
+  setupDateInputs();
+  renderSwatches('mob');renderSwatches('pc');
+  initSwipe();
+  initSearchYearFilter();
 }
 init();
 </script>
