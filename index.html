@@ -567,24 +567,27 @@ function setupDateInputs(){
 }
 
 function getDateVal(which){
-  const p=which==='start'?'Start':which==='end'?'End':which==='pcStart'?'PcStart':'PcEnd';
-  const y=document.getElementById(`f${p}Y`)?.value||'';
-  const m=document.getElementById(`f${p}M`)?.value||'';
-  const d=document.getElementById(`f${p}D`)?.value||'';
+  const ids={start:['fStartY','fStartM','fStartD'],end:['fEndY','fEndM','fEndD'],pcStart:['pcFStartY','pcFStartM','pcFStartD'],pcEnd:['pcFEndY','pcFEndM','pcFEndD']};
+  const [yId,mId,dId]=ids[which]||[];
+  const y=document.getElementById(yId)?.value||'';
+  const m=document.getElementById(mId)?.value||'';
+  const d=document.getElementById(dId)?.value||'';
   if(y.length===4&&m.length>=1&&d.length>=1)return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
   return '';
 }
 function setDateVal(which,dateStr){
-  const p=which==='start'?'Start':which==='end'?'End':which==='pcStart'?'PcStart':'PcEnd';
+  const ids={start:['fStartY','fStartM','fStartD'],end:['fEndY','fEndM','fEndD'],pcStart:['pcFStartY','pcFStartM','pcFStartD'],pcEnd:['pcFEndY','pcFEndM','pcFEndD']};
+  const [yId,mId,dId]=ids[which]||[];
   const parts=dateStr.split('-');
-  const el=(k)=>document.getElementById(`f${p}${k}`);
-  if(el('Y'))el('Y').value=parts[0]||'';
-  if(el('M'))el('M').value=parts[1]?parseInt(parts[1]).toString():'';
-  if(el('D'))el('D').value=parts[2]?parseInt(parts[2]).toString():'';
+  const ey=document.getElementById(yId),em=document.getElementById(mId),ed=document.getElementById(dId);
+  if(ey)ey.value=parts[0]||'';
+  if(em)em.value=parts[1]?parseInt(parts[1]).toString():'';
+  if(ed)ed.value=parts[2]?parseInt(parts[2]).toString():'';
 }
 function clearDateVal(which){
-  const p=which==='start'?'Start':which==='end'?'End':which==='pcStart'?'PcStart':'PcEnd';
-  ['Y','M','D'].forEach(x=>{const el=document.getElementById(`f${p}${x}`);if(el)el.value='';});
+  const ids={start:['fStartY','fStartM','fStartD'],end:['fEndY','fEndM','fEndD'],pcStart:['pcFStartY','pcFStartM','pcFStartD'],pcEnd:['pcFEndY','pcFEndM','pcFEndD']};
+  const [yId,mId,dId]=ids[which]||[];
+  [yId,mId,dId].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
 }
 function togglePicker(which){
   const pid=`picker${which.charAt(0).toUpperCase()+which.slice(1)}`;
