@@ -536,7 +536,7 @@ const BASE='https://api.jsonbin.io/v3/b/'+BIN_ID;
 const PRODUCT_TYPES=['1인 종일권','1인 반일권','1인 야간권','2인 종일권','2인 반일권','2인 야간권','3인 종일권','3인 반일권','3인 야간권','4인 종일권','4인 반일권','4인 야간권','소인권(1인)'];
 const SEASON_TYPES=['로우시즌','하이시즌','골드시즌'];
 const SEASON_LABEL={low:'로우시즌',high:'하이시즌',gold:'골드시즌'};
-const COLORS=['#e55d62','#e5c4bf','#faab23','#fae390','#40916C','#87b27c','#a3bb95','#005BB5','#30B0C7','#7db0c7','#9dccdc','#7774b6','#bebfd7','#9968a1','#b780a9','#cfb3c5','#FF69B4','#fcc1d3'];
+const COLORS=['#e55d62','#F2A6A0','#F2A65A','#F4D06F','#40916C','#87b27c','#005BB5','#5C9EAD','#6F91C7','#7774b6','#9968a1','#C19AC0','#FF69B4','#D77FA1','#B68B6D'];
 
 function getAutoColor(type){let h=2166136261;for(let i=0;i<type.length;i++){h^=type.charCodeAt(i);h=(h*16777619)>>>0;}return COLORS[h%COLORS.length];}
 function getColor(p){if(typeof p==='string')return getAutoColor(p);return p.color||getAutoColor(p.type);}
