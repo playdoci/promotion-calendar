@@ -236,6 +236,18 @@
   .pr-cell.sat .pr-dn { color: #4A7AAA; }
   .pr-pill { font-size: calc(5.5pt * var(--s)); padding: 0.2mm 0.8mm; border-radius: 0.8mm; margin-top: 0.4mm; line-height: 1.25; font-weight: 700; word-break: keep-all; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
+  .pr-row { display: grid; grid-template-columns: 3fr 2fr; grid-template-rows: minmax(0, 1fr); gap: 3mm; min-height: 0; }
+  .pr-list { border: 0.3mm solid #d9d0bd; border-radius: 2mm; padding: 2mm; overflow: hidden; min-height: 0; font-size: calc(7pt * var(--s) * var(--f, 1)); color: #3D3730; }
+  .pr-lt { font-weight: 800; color: #5C5040; margin-bottom: 1.5mm; font-size: 1.15em; }
+  .pr-pi { margin-bottom: 1.5mm; }
+  .pr-pn { font-weight: 800; display: flex; align-items: center; gap: 1mm; }
+  .pr-sq { display: inline-block; width: 2.2mm; height: 2.2mm; border-radius: 0.5mm; flex-shrink: 0; }
+  .pr-pd { margin-left: auto; font-weight: 700; color: #8a7d66; font-size: 0.9em; white-space: nowrap; padding-left: 1mm; }
+  .pr-prow { display: flex; justify-content: space-between; gap: 2mm; padding-left: 3.2mm; line-height: 1.35; }
+  .pr-pname { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .pr-pprice { font-weight: 800; white-space: nowrap; }
+  .pr-none { color: #aaa; }
+
   @media print {
     html, body { overflow: visible !important; height: auto !important; background: #fff !important; }
     .wrap, .pc-layout, .modal-bg, .toast { display: none !important; }
@@ -579,6 +591,12 @@
         <button class="pr-orient-btn" id="prOrientP" onclick="setPrOrient('portrait')" type="button">세로</button>
       </div>
     </div>
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="prDetail" checked style="width:18px;height:18px;padding:0;margin:0;">
+        <span>상품/금액 포함 (1~3개월, 달력 오른쪽에 표시)</span>
+      </label>
+    </div>
     <button class="submit-btn" onclick="doPrint()" type="button">🖨️ 출력하기</button>
     <button class="cancel-btn" onclick="closePrintModal()" type="button">닫기</button>
   </div>
@@ -622,6 +640,7 @@ function setupDateInputs(){
     if(!ey)return;
     ey.addEventListener('input',()=>{if(ey.value.length===4)em.focus();});
     em.addEventListener('input',()=>{if(em.value.length===2)ed.focus();});
+    [ey,em,ed].forEach(el=>el.addEventListener('input',()=>{if(y==='fStartY')autoSeasonMobile();else if(y==='pcFStartY')autoSeasonPC();}));
   });
   document.addEventListener('click',e=>{
     ['start','end','pcStart','pcEnd'].forEach(w=>{
@@ -649,6 +668,7 @@ function setDateVal(which,dateStr){
   if(ey)ey.value=parts[0]||'';
   if(em)em.value=parts[1]?parseInt(parts[1]).toString():'';
   if(ed)ed.value=parts[2]?parseInt(parts[2]).toString():'';
+  if(which==='start')autoSeasonMobile();if(which==='pcStart')autoSeasonPC();
 }
 function clearDateVal(which){
   const ids={start:['fStartY','fStartM','fStartD'],end:['fEndY','fEndM','fEndD'],pcStart:['pcFStartY','pcFStartM','pcFStartD'],pcEnd:['pcFEndY','pcFEndM','pcFEndD']};
@@ -879,7 +899,8 @@ function renderPcCal(){
 }
 
 /* ── PC 오른쪽 날짜 상세 ── */
-function showPcDetail(ds,d,m,y){
+let lastPcDetail=null;
+function showPcDetail(ds,d,m,y){lastPcDetail=[ds,d,m,y];
   const ps=getPromosForDate(ds);
   const mn=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   const holName=holidays.find(h=>h.date===ds)?.name||'';
@@ -887,7 +908,7 @@ function showPcDetail(ds,d,m,y){
   if(holName)html+=` <span style="font-size:12px;color:#dc4038;font-weight:800;">🔴 ${holName}</span>`;
   html+=`</div>`;
   if(ps.length===0){html+=`<div class="empty-state">등록된 프로모션이 없습니다.</div>`;}
-  else{ps.forEach(p=>{const c=getColor(p),idx=promos.indexOf(p);html+=`<div class="promo-card" style="border-color:${hexToRgba(c,0.4)};"><div class="pname" style="justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}</div><div style="display:flex;gap:5px;"><button onclick="pcStartEdit(${idx})" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button><button onclick="pcStartCopy(${idx})" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button></div></div><div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;if(p.products&&p.products.length>0){p.products.forEach(pr=>{const sl=pr.season?pr.season.replace('시즌','')+'   ':'';html+=`<div class="product-row"><span class="ptype">${sl}${pr.name}</span><span style="font-weight:800;color:#5C5040;">${Number(pr.price).toLocaleString()}원</span></div>`;});}else{html+=`<div style="font-size:12px;color:#C8BCA8;">판매 상품 없음</div>`;}html+=`</div>`;});}
+  else{ps.forEach(p=>{const c=getColor(p),idx=promos.indexOf(p);html+=`<div class="promo-card" style="border-color:${hexToRgba(c,0.4)};"><div class="pname" style="justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}</div><div style="display:flex;gap:5px;"><button onclick="pcStartEdit(${idx})" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button><button onclick="pcStartCopy(${idx})" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button><button onclick="deletePromo(${idx})" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">🗑️ 삭제</button></div></div><div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;if(p.products&&p.products.length>0){p.products.forEach(pr=>{const sl=pr.season?pr.season.replace('시즌','')+'   ':'';html+=`<div class="product-row"><span class="ptype">${sl}${pr.name}</span><span style="font-weight:800;color:#5C5040;">${Number(pr.price).toLocaleString()}원</span></div>`;});}else{html+=`<div style="font-size:12px;color:#C8BCA8;">판매 상품 없음</div>`;}html+=`</div>`;});}
   document.getElementById('pcDetailEmpty').style.display='none';
   document.getElementById('pcDetailContent').style.display='';
   document.getElementById('pcDetailContent').innerHTML=html;
@@ -902,7 +923,7 @@ function openDayModal(ds,d,m,y){
   if(holName)html+=`<div style="font-size:12px;color:#dc4038;font-weight:800;margin-bottom:12px;">🔴 ${holName}</div>`;
   else html+=`<div style="margin-bottom:12px;"></div>`;
   if(ps.length===0){html+=`<div class="empty-state">등록된 프로모션이 없습니다.</div>`;}
-  else{ps.forEach(p=>{const c=getColor(p),idx=promos.indexOf(p);html+=`<div class="promo-card" style="border-color:${hexToRgba(c,0.4)};"><div class="pname" style="justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}</div><div style="display:flex;gap:5px;"><button onclick="document.getElementById('dayModal').style.display='none';startEdit(${idx});" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button><button onclick="document.getElementById('dayModal').style.display='none';startCopy(${idx});" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button></div></div><div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;if(p.products&&p.products.length>0){p.products.forEach(pr=>{const sl=pr.season?pr.season.replace('시즌','')+'   ':'';html+=`<div class="product-row"><span class="ptype">${sl}${pr.name}</span><span style="font-weight:800;color:#5C5040;">${Number(pr.price).toLocaleString()}원</span></div>`;});}else{html+=`<div style="font-size:12px;color:#C8BCA8;">판매 상품 없음</div>`;}html+=`</div>`;});}
+  else{ps.forEach(p=>{const c=getColor(p),idx=promos.indexOf(p);html+=`<div class="promo-card" style="border-color:${hexToRgba(c,0.4)};"><div class="pname" style="justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></span>${p.type}</div><div style="display:flex;gap:5px;"><button onclick="document.getElementById('dayModal').style.display='none';startEdit(${idx});" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">✏️ 수정</button><button onclick="document.getElementById('dayModal').style.display='none';startCopy(${idx});" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">📋 복사</button><button onclick="deleteFromModal(${idx})" style="background:#FDE6B1;border:none;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;color:#5C5040;cursor:pointer;font-family:'Nanum Gothic',sans-serif;">🗑️ 삭제</button></div></div><div class="pdate">📆 ${p.start} ~ ${p.end}</div>`;if(p.products&&p.products.length>0){p.products.forEach(pr=>{const sl=pr.season?pr.season.replace('시즌','')+'   ':'';html+=`<div class="product-row"><span class="ptype">${sl}${pr.name}</span><span style="font-weight:800;color:#5C5040;">${Number(pr.price).toLocaleString()}원</span></div>`;});}else{html+=`<div style="font-size:12px;color:#C8BCA8;">판매 상품 없음</div>`;}html+=`</div>`;});}
   document.getElementById('modalContent').innerHTML=html;
   document.getElementById('dayModal').style.display='flex';
 }
@@ -910,12 +931,12 @@ function closeBgModal(e){if(e.target.id==='dayModal')document.getElementById('da
 
 /* ── 상품 (모바일) ── */
 let productEntries=[];
-function addProduct(preset){
+function addProduct(preset,autoSeason){
   const id=productCount++;productEntries.push(id);
   const div=document.createElement('div');div.className='product-entry';div.id='pe_'+id;
-  div.innerHTML=`<button class="del-btn" onclick="removeProduct(${id})">×</button><div class="form-group" style="margin-bottom:8px;padding-right:30px;"><label>상품명</label><select id="pname_${id}">${PRODUCT_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:8px;"><label>시즌</label><select id="pseason_${id}">${SEASON_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:0;"><label>가격 (원)</label><input type="number" id="pprice_${id}" placeholder="0" inputmode="numeric"></div>`;
+  div.innerHTML=`<button class="del-btn" onclick="removeProduct(${id})">×</button><div class="form-group" style="margin-bottom:8px;padding-right:30px;"><label>상품명</label><select id="pname_${id}">${PRODUCT_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:8px;"><label>시즌</label><select id="pseason_${id}" data-auto="1" onchange="this.dataset.auto='0'">${SEASON_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:0;"><label>가격 (원)</label><input type="number" id="pprice_${id}" placeholder="0" inputmode="numeric"></div>`;
   document.getElementById('productList').appendChild(div);
-  if(preset){document.getElementById('pname_'+id).value=preset.name||PRODUCT_TYPES[0];document.getElementById('pseason_'+id).value=preset.season||SEASON_TYPES[0];document.getElementById('pprice_'+id).value=preset.price||'';}
+  if(preset){document.getElementById('pname_'+id).value=preset.name||PRODUCT_TYPES[0];document.getElementById('pseason_'+id).value=preset.season||SEASON_TYPES[0];document.getElementById('pprice_'+id).value=preset.price||'';document.getElementById('pseason_'+id).dataset.auto=autoSeason?'1':'0';}else{autoSeasonMobile();}
 }
 function removeProduct(id){document.getElementById('pe_'+id)?.remove();productEntries=productEntries.filter(x=>x!==id);}
 
@@ -953,7 +974,7 @@ async function submitPromo(){
 function startCopy(idx){
   const p=promos[idx];editIdx=-1;selectedColor=p.color||'';clearDateVal('start');clearDateVal('end');
   document.getElementById('fType').value=p.type;document.getElementById('productList').innerHTML='';productEntries=[];productCount=0;
-  if(p.products?.length)p.products.forEach(pr=>addProduct(pr));renderSwatches('mob');
+  if(p.products?.length)p.products.forEach(pr=>addProduct(pr,true));renderSwatches('mob');
   document.getElementById('editBanner').style.display='';document.getElementById('editBanner').textContent='📋 복사 모드 — 날짜를 입력하고 등록하세요';
   document.getElementById('submitBtn').textContent='프로모션 등록';document.getElementById('cancelBtn').style.display='';
   switchTab('form');showToast('📋 내용이 복사됐어요! 날짜를 입력해 주세요.');
@@ -961,12 +982,12 @@ function startCopy(idx){
 
 /* ── 상품 (PC) ── */
 let pcProductEntries=[];
-function pcAddProduct(preset){
+function pcAddProduct(preset,autoSeason){
   const id=pcProductCount++;pcProductEntries.push(id);
   const div=document.createElement('div');div.className='product-entry';div.id='pcPe_'+id;
-  div.innerHTML=`<button class="del-btn" onclick="pcRemoveProduct(${id})">×</button><div class="form-group" style="margin-bottom:8px;padding-right:30px;"><label>상품명</label><select id="pcPname_${id}">${PRODUCT_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:8px;"><label>시즌</label><select id="pcPseason_${id}">${SEASON_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:0;"><label>가격 (원)</label><input type="number" id="pcPprice_${id}" placeholder="0" inputmode="numeric"></div>`;
+  div.innerHTML=`<button class="del-btn" onclick="pcRemoveProduct(${id})">×</button><div class="form-group" style="margin-bottom:8px;padding-right:30px;"><label>상품명</label><select id="pcPname_${id}">${PRODUCT_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:8px;"><label>시즌</label><select id="pcPseason_${id}" data-auto="1" onchange="this.dataset.auto='0'">${SEASON_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></div><div class="form-group" style="margin-bottom:0;"><label>가격 (원)</label><input type="number" id="pcPprice_${id}" placeholder="0" inputmode="numeric"></div>`;
   document.getElementById('pcProductList').appendChild(div);
-  if(preset){document.getElementById('pcPname_'+id).value=preset.name||PRODUCT_TYPES[0];document.getElementById('pcPseason_'+id).value=preset.season||SEASON_TYPES[0];document.getElementById('pcPprice_'+id).value=preset.price||'';}
+  if(preset){document.getElementById('pcPname_'+id).value=preset.name||PRODUCT_TYPES[0];document.getElementById('pcPseason_'+id).value=preset.season||SEASON_TYPES[0];document.getElementById('pcPprice_'+id).value=preset.price||'';document.getElementById('pcPseason_'+id).dataset.auto=autoSeason?'1':'0';}else{autoSeasonPC();}
 }
 function pcRemoveProduct(id){document.getElementById('pcPe_'+id)?.remove();pcProductEntries=pcProductEntries.filter(x=>x!==id);}
 function pcStartEdit(idx){
@@ -1003,7 +1024,7 @@ async function pcSubmitPromo(){
 function pcStartCopy(idx){
   const p=promos[idx];pcEditIdx=-1;pcSelectedColor=p.color||'';clearDateVal('pcStart');clearDateVal('pcEnd');
   document.getElementById('pcFType').value=p.type;document.getElementById('pcProductList').innerHTML='';pcProductEntries=[];pcProductCount=0;
-  if(p.products?.length)p.products.forEach(pr=>pcAddProduct(pr));renderSwatches('pc');
+  if(p.products?.length)p.products.forEach(pr=>pcAddProduct(pr,true));renderSwatches('pc');
   document.getElementById('pcEditBanner').style.display='';document.getElementById('pcEditBanner').textContent='📋 복사 모드 — 날짜를 입력하고 등록하세요';
   document.getElementById('pcSubmitBtn').textContent='프로모션 등록';document.getElementById('pcCancelBtn').style.display='';
   pcSwitchTab('form');showToast('📋 내용이 복사됐어요! 날짜를 입력해 주세요.');
@@ -1027,8 +1048,13 @@ function renderList(){
 }
 
 async function deletePromo(idx){
-  if(!confirm('이 프로모션을 삭제하시겠습니까?'))return;
+  if(!confirm('이 프로모션을 삭제하시겠습니까?'))return false;
   promos.splice(idx,1);await saveAll();showToast('🗑 삭제됐습니다.');renderList();renderCal();renderPcCal();
+  if(lastPcDetail)showPcDetail(...lastPcDetail);
+  return true;
+}
+async function deleteFromModal(idx){
+  if(await deletePromo(idx))document.getElementById('dayModal').style.display='none';
 }
 
 /* ── 검색 ── */
@@ -1089,6 +1115,21 @@ async function init(){
   initSwipe();
   initSearchYearFilter();
 }
+/* ── 시작일 기준 시즌 자동 선택 ── */
+function seasonForDate(ds){
+  if(!ds)return '';
+  const s=[...seasons].sort((a,b)=>a.start.localeCompare(b.start)).find(x=>ds>=x.start&&ds<=x.end);
+  return s?SEASON_LABEL[s.type]:'';
+}
+function autoSeasonMobile(){
+  const label=seasonForDate(getDateVal('start'));if(!label)return;
+  productEntries.forEach(id=>{const el=document.getElementById('pseason_'+id);if(el&&el.dataset.auto==='1')el.value=label;});
+}
+function autoSeasonPC(){
+  const label=seasonForDate(getDateVal('pcStart'));if(!label)return;
+  pcProductEntries.forEach(id=>{const el=document.getElementById('pcPseason_'+id);if(el&&el.dataset.auto==='1')el.value=label;});
+}
+
 /* ── 출력 (A4 한 장에 여러 달) ── */
 let prOrient='landscape';
 const prMonths=new Set();
@@ -1144,20 +1185,50 @@ function buildPrintMonth(y,m){
   return `<div class="pr-month"><div class="pr-title">${y}년 ${m+1}월</div><div class="pr-grid" style="grid-template-rows:auto repeat(${weeks},1fr);">${cells}</div></div>`;
 }
 
+function buildPrintDetailRow(y,m,s,rowMm){
+  const last=new Date(y,m+1,0).getDate();
+  const mStart=dStr(y,m,1),mEnd=dStr(y,m,last);
+  const list=promos.filter(p=>p.start<=mEnd&&p.end>=mStart).sort((a,b)=>a.start.localeCompare(b.start)||a.end.localeCompare(b.end));
+  let lines=1;list.forEach(p=>{lines+=1.5+(p.products?.length||0);});
+  const f=Math.max(0.55,Math.min(1,(rowMm-12)/(lines*3.5*s)));
+  const items=list.length?list.map(p=>{
+    const c=getColor(p);
+    const range=p.start===p.end?fmtDate(p.start):`${fmtDate(p.start)}~${fmtDate(p.end)}`;
+    const rows=(p.products||[]).map(pr=>{
+      const sl=pr.season?pr.season.replace('시즌','')+' ':'';
+      return `<div class="pr-prow"><span class="pr-pname">${sl}${pr.name}</span><span class="pr-pprice">${Number(pr.price).toLocaleString()}원</span></div>`;
+    }).join('');
+    return `<div class="pr-pi"><div class="pr-pn"><span class="pr-sq" style="background:${c};"></span><span>${p.type}</span><span class="pr-pd">${range}</span></div>${rows}</div>`;
+  }).join(''):'<div class="pr-none">등록된 프로모션이 없습니다</div>';
+  return `<div class="pr-row">${buildPrintMonth(y,m)}<div class="pr-list" style="--f:${f};"><div class="pr-lt">${m+1}월 프로모션</div>${items}</div></div>`;
+}
+
 function doPrint(){
   const y=+document.getElementById('prYear').value;
   const ms=[...prMonths].sort((a,b)=>a-b);
   if(!ms.length){showToast('출력할 월을 선택해 주세요.');return;}
   const n=ms.length;
-  let cols;
-  if(prOrient==='landscape')cols=n<=3?n:(n===4?2:3);
-  else cols=n<=3?1:2;
-  const rows=Math.ceil(n/cols);
-  const scale=n<=2?1.2:(n<=4?1:0.85);
-  const H=prOrient==='landscape'?'188mm':'275mm';
-  document.getElementById('printArea').innerHTML=
-    `<div class="pr-sheet" style="--s:${scale};height:${H};grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);">`+
-    ms.map(m=>buildPrintMonth(y,m)).join('')+`</div>`;
+  const wantDetail=document.getElementById('prDetail').checked;
+  const withDetail=wantDetail&&n<=3;
+  if(wantDetail&&!withDetail)showToast('4개월 이상은 달력만 출력돼요.');
+  const Hmm=prOrient==='landscape'?188:275;
+  let html;
+  if(withDetail){
+    const scale=n===1?1.2:(n===2?1:0.85);
+    const gap=4;
+    const rowMm=(Hmm-gap*(n-1))/n;
+    html=`<div class="pr-sheet" style="--s:${scale};height:${Hmm}mm;gap:${gap}mm;grid-template-columns:1fr;grid-template-rows:repeat(${n},minmax(0,1fr));">`+
+      ms.map(m=>buildPrintDetailRow(y,m,scale,rowMm)).join('')+`</div>`;
+  }else{
+    let cols;
+    if(prOrient==='landscape')cols=n<=3?n:(n===4?2:3);
+    else cols=n<=3?1:2;
+    const rows=Math.ceil(n/cols);
+    const scale=n<=2?1.2:(n<=4?1:0.85);
+    html=`<div class="pr-sheet" style="--s:${scale};height:${Hmm}mm;grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);">`+
+      ms.map(m=>buildPrintMonth(y,m)).join('')+`</div>`;
+  }
+  document.getElementById('printArea').innerHTML=html;
   let st=document.getElementById('printPageStyle');
   if(!st){st=document.createElement('style');st.id='printPageStyle';document.head.appendChild(st);}
   st.textContent=`@page{size:A4 ${prOrient};margin:8mm;}`;
